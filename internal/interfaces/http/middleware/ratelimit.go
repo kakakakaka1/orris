@@ -32,12 +32,26 @@ func NewRateLimiter(redisClient *redis.Client, limit int, window time.Duration) 
 	}
 }
 
-// Limit returns a Gin middleware that enforces the rate limit per client IP.
+// Limit returns a Gin middleware that enforces the default rate limit per client IP.
 func (rl *RateLimiter) Limit() gin.HandlerFunc {
+	return rl.limitWithKey("ratelimit:ip", rl.limit)
+}
+
+// LimitN returns a Gin middleware that enforces a custom (typically stricter) per-IP
+// limit over the same window, using a separate counter namespace so it does not share
+// the default bucket. Use it to cap sensitive endpoints (login, password reset) more
+// tightly than general traffic.
+func (rl *RateLimiter) LimitN(limit int) gin.HandlerFunc {
+	return rl.limitWithKey(fmt.Sprintf("ratelimit:strict:%d", limit), limit)
+}
+
+// limitWithKey is the shared fixed-window counter implementation. keyPrefix isolates
+// independent buckets so different limits applied to the same IP do not interfere.
+func (rl *RateLimiter) limitWithKey(keyPrefix string, limit int) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		clientIP := c.ClientIP()
 		windowBucket := time.Now().Unix() / int64(rl.window.Seconds())
-		key := fmt.Sprintf("ratelimit:ip:%s:%d", clientIP, windowBucket)
+		key := fmt.Sprintf("%s:%s:%d", keyPrefix, clientIP, windowBucket)
 
 		ctx := context.Background()
 
@@ -54,7 +68,7 @@ func (rl *RateLimiter) Limit() gin.HandlerFunc {
 			rl.redisClient.Expire(ctx, key, rl.window+time.Second)
 		}
 
-		if count > int64(rl.limit) {
+		if count > int64(limit) {
 			utils.ErrorResponse(c, http.StatusTooManyRequests, "rate limit exceeded, please try again later")
 			c.Abort()
 			return

@@ -15,19 +15,23 @@ type AuthRouteConfig struct {
 	RateLimiter    *middleware.RateLimiter
 }
 
+// strictAuthRateLimit caps credential-sensitive endpoints (login, password reset)
+// well below the general per-IP limit to slow credential stuffing and password spraying.
+const strictAuthRateLimit = 10
+
 // SetupAuthRoutes configures authentication routes.
 func SetupAuthRoutes(engine *gin.Engine, cfg *AuthRouteConfig) {
 	auth := engine.Group("/auth")
 	{
 		auth.POST("/register", cfg.RateLimiter.Limit(), cfg.AuthHandler.Register)
-		auth.POST("/login", cfg.RateLimiter.Limit(), cfg.AuthHandler.Login)
+		auth.POST("/login", cfg.RateLimiter.LimitN(strictAuthRateLimit), cfg.AuthHandler.Login)
 		auth.POST("/verify-email", cfg.RateLimiter.Limit(), cfg.AuthHandler.VerifyEmail)
 		auth.GET("/verify-email", cfg.RateLimiter.Limit(), cfg.AuthHandler.VerifyEmail)
-		auth.POST("/forgot-password", cfg.RateLimiter.Limit(), cfg.AuthHandler.ForgotPassword)
-		auth.POST("/reset-password", cfg.RateLimiter.Limit(), cfg.AuthHandler.ResetPassword)
+		auth.POST("/forgot-password", cfg.RateLimiter.LimitN(strictAuthRateLimit), cfg.AuthHandler.ForgotPassword)
+		auth.POST("/reset-password", cfg.RateLimiter.LimitN(strictAuthRateLimit), cfg.AuthHandler.ResetPassword)
 
-		auth.GET("/oauth/:provider", cfg.AuthHandler.InitiateOAuth)
-		auth.GET("/oauth/:provider/callback", cfg.AuthHandler.HandleOAuthCallback)
+		auth.GET("/oauth/:provider", cfg.RateLimiter.Limit(), cfg.AuthHandler.InitiateOAuth)
+		auth.GET("/oauth/:provider/callback", cfg.RateLimiter.Limit(), cfg.AuthHandler.HandleOAuthCallback)
 
 		auth.POST("/refresh", cfg.RateLimiter.Limit(), cfg.AuthHandler.RefreshToken)
 		auth.POST("/logout", cfg.AuthMiddleware.RequireAuth(), cfg.AuthHandler.Logout)

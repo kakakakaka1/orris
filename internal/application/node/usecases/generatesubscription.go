@@ -17,6 +17,7 @@ import (
 	"github.com/orris-inc/orris/internal/infrastructure/template"
 	"github.com/orris-inc/orris/internal/shared/biztime"
 	"github.com/orris-inc/orris/internal/shared/logger"
+	"github.com/orris-inc/orris/internal/shared/utils/logutil"
 )
 
 type GenerateSubscriptionCommand struct {
@@ -148,7 +149,7 @@ func (uc *GenerateSubscriptionUseCase) Execute(ctx context.Context, cmd Generate
 	}
 
 	if len(nodes) == 0 {
-		uc.logger.Warnw("no available nodes found, returning empty subscription", "token", cmd.SubscriptionToken, "mode", nodeMode)
+		uc.logger.Warnw("no available nodes found, returning empty subscription", "token", logutil.TruncateForLog(cmd.SubscriptionToken, 8), "mode", nodeMode)
 	}
 
 	formatter, ok := uc.formatters[cmd.Format]

@@ -91,12 +91,16 @@ func (uc *LoginWithPasswordUseCase) Execute(ctx context.Context, cmd LoginWithPa
 		return nil, apperrors.NewInvalidCredentialsError()
 	}
 
-	// Validate user can login using unified helper (checks lock, password availability, status)
-	if validationErr := uc.authHelper.ValidateUserCanLogin(existingUser); validationErr != nil {
-		return nil, validationErr
+	// Enforce lockout before the password check, but return the generic credential
+	// error so a probe cannot distinguish a locked (and therefore existing) account
+	// from a simple wrong password.
+	if existingUser.IsLocked() {
+		uc.logger.Warnw("login attempt on locked account", "user_id", existingUser.ID())
+		return nil, apperrors.NewInvalidCredentialsError()
 	}
 
-	// Verify password
+	// Verify password. Accounts without a local password (OAuth-only) also fail here
+	// with the same generic error, so the account type is never revealed pre-auth.
 	if err := existingUser.VerifyPassword(cmd.Password, uc.passwordHasher); err != nil {
 		// Record failed login and save with security policy (non-critical operation)
 		var securityPolicy *user.SecurityPolicy
@@ -105,6 +109,13 @@ func (uc *LoginWithPasswordUseCase) Execute(ctx context.Context, cmd LoginWithPa
 		}
 		uc.authHelper.RecordFailedLoginWithPolicyAndSave(ctx, existingUser, securityPolicy)
 		return nil, apperrors.NewInvalidCredentialsError()
+	}
+
+	// Only after the credentials are confirmed do we surface an inactive-account error;
+	// the caller has now proven knowledge of the password, so this leaks nothing about
+	// account existence.
+	if validationErr := uc.authHelper.ValidateUserCanPerformAction(existingUser); validationErr != nil {
+		return nil, validationErr
 	}
 
 	// Determine session duration based on remember me option
