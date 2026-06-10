@@ -180,6 +180,18 @@ func (uc *HandleOAuthCallbackUseCase) Execute(ctx context.Context, cmd HandleOAu
 				uc.logger.Warnw("failed to grant admin role to first user", "error", err, "user_id", existingUser.ID())
 				// Continue despite error as user is already created
 			}
+		} else {
+			// Linking a new OAuth identity to a pre-existing local account, matched by email.
+			// Require the provider to assert the email is verified; otherwise an attacker could
+			// register a provider account carrying an unverified email that matches a victim's
+			// account and silently take it over without knowing the victim's password.
+			if !userInfo.EmailVerified {
+				uc.logger.Warnw("refusing to link oauth identity to existing account: provider email not verified",
+					"provider", cmd.Provider,
+					"user_id", existingUser.ID(),
+				)
+				return nil, apperrors.NewUnauthorizedError("oauth email is not verified")
+			}
 		}
 
 		newOAuthAccount, err := user.NewOAuthAccount(existingUser.ID(), cmd.Provider, userInfo.ProviderID, userInfo.Email)

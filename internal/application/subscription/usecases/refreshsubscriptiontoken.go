@@ -6,11 +6,14 @@ import (
 	"time"
 
 	"github.com/orris-inc/orris/internal/domain/subscription"
+	apperrors "github.com/orris-inc/orris/internal/shared/errors"
 	"github.com/orris-inc/orris/internal/shared/logger"
 )
 
 type RefreshSubscriptionTokenCommand struct {
-	OldTokenID uint
+	// SubscriptionID is the owner-verified subscription the token must belong to.
+	SubscriptionID uint
+	OldTokenID     uint
 }
 
 type RefreshSubscriptionTokenResult struct {
@@ -45,6 +48,19 @@ func (uc *RefreshSubscriptionTokenUseCase) Execute(ctx context.Context, cmd Refr
 	if err != nil {
 		uc.logger.Errorw("failed to get old token", "error", err, "token_id", cmd.OldTokenID)
 		return nil, fmt.Errorf("failed to get token: %w", err)
+	}
+
+	// Authorization: the token must belong to the owner-verified subscription.
+	// Without this check any authenticated user owning any subscription could mint a
+	// fresh valid token for another user's subscription by supplying an arbitrary
+	// (enumerable) token ID, enabling full takeover of the victim's subscription feed.
+	if oldToken.SubscriptionID() != cmd.SubscriptionID {
+		uc.logger.Warnw("subscription token does not belong to subscription",
+			"token_id", cmd.OldTokenID,
+			"token_subscription_id", oldToken.SubscriptionID(),
+			"request_subscription_id", cmd.SubscriptionID,
+		)
+		return nil, apperrors.NewNotFoundError("subscription token not found")
 	}
 
 	if !oldToken.IsValid() {
