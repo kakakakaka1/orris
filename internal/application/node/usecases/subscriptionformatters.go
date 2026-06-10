@@ -783,11 +783,27 @@ func (f *SurgeFormatter) FormatWithPassword(nodes []*Node, password string) (str
 		}
 
 		if line != "" {
-			lines = append(lines, line)
+			// Strip control characters so a user-controlled field (name, SNI, host,
+			// path, obfs-host) embedding a newline cannot break out of its proxy line
+			// and inject arbitrary sections/proxies/rules into the victim's config.
+			lines = append(lines, stripControlChars(line))
 		}
 	}
 
 	return strings.Join(lines, "\n"), nil
+}
+
+// stripControlChars removes ASCII control characters (C0 range and DEL), including
+// CR and LF, from s. User-controllable fields are interpolated verbatim into
+// line- and YAML-based subscription configs, so an embedded newline would otherwise
+// let one user inject config directives into another user's client.
+func stripControlChars(s string) string {
+	return strings.Map(func(r rune) rune {
+		if r < 0x20 || r == 0x7f {
+			return -1
+		}
+		return r
+	}, s)
 }
 
 // buildVMessLine builds a Surge 5 VMess proxy line

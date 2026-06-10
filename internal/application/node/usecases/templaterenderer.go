@@ -101,7 +101,10 @@ func (r *TemplateRenderer) extractProxyNames(nodes []*Node) string {
 
 // quoteYAMLString wraps node name in single quotes for YAML flow-style arrays.
 // Single quotes in the name are escaped by doubling them (YAML spec).
+// Control characters (including newlines) are stripped first so a crafted name
+// cannot break out of the single-quoted scalar and inject YAML structure.
 func quoteYAMLString(s string) string {
+	s = stripControlChars(s)
 	escaped := strings.ReplaceAll(s, "'", "''")
 	return "'" + escaped + "'"
 }

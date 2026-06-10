@@ -62,18 +62,17 @@ func NewJWTService(secret string, accessExpMinutes, refreshExpDays int, serverMo
 }
 
 // ValidateSigningKey checks that a signing key is safe for the current server mode.
-// In debug mode, weak keys are silently allowed to simplify local development.
-// In any other mode (release, test, etc.), weak keys cause a fatal startup error.
+// The well-known default placeholder is rejected in every mode: a deployment that
+// silently falls back to debug (e.g. an unrecognized env value) must never run with
+// a publicly known signing key, which would let anyone forge tokens. The minimum
+// length requirement is still relaxed in debug mode to simplify local development.
 func ValidateSigningKey(key, serverMode, configField string) error {
 	isDebug := serverMode == "debug" || serverMode == ""
 
 	if key == defaultInsecureSecret {
-		if isDebug {
-			return nil
-		}
 		return fmt.Errorf(
 			"%s is set to the default insecure value %q; "+
-				"set a strong secret (>= %d chars) via config or ORRIS_%s env var before running in production",
+				"set a strong secret (>= %d chars) via config or ORRIS_%s env var",
 			configField, defaultInsecureSecret, minSigningKeyLength,
 			configFieldToEnvKey(configField),
 		)

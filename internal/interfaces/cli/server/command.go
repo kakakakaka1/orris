@@ -229,7 +229,10 @@ func mapEnvToGinMode(environment string) string {
 	case "release":
 		return "release"
 	default:
-		return "debug"
+		// Fail safe: an unrecognized environment must not silently drop into debug
+		// mode, which would relax signing-key validation. Default to the strictest
+		// mode so misconfiguration cannot weaken security checks.
+		return "release"
 	}
 }
 
