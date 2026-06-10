@@ -756,8 +756,9 @@ func (f *SurgeFormatter) FormatWithPassword(nodes []*Node, password string) (str
 			}
 
 		case vo.ProtocolAnyTLS:
-			// Surge does not natively support AnyTLS, skip
-			continue
+			if node.AnyTLSConfig != nil {
+				line = f.buildAnyTLSLine(node, password)
+			}
 
 		default:
 			// Shadowsocks: adjust password for SS2022 methods
@@ -896,6 +897,36 @@ func (f *SurgeFormatter) buildTUICLine(node *Node, password string) string {
 
 	if cfg.ALPN() != "" {
 		line += fmt.Sprintf(", alpn=%s", cfg.ALPN())
+	}
+
+	return line
+}
+
+// buildAnyTLSLine builds a Surge AnyTLS proxy line.
+// Requires Surge iOS 5.17.0+ / Mac 6.4.3+. Fingerprint and idle-session
+// options are not supported by Surge and are omitted.
+// password is the subscription-derived credential.
+func (f *SurgeFormatter) buildAnyTLSLine(node *Node, password string) string {
+	cfg := node.AnyTLSConfig
+	// Use subscription-derived password, fallback to config password if empty
+	pwd := password
+	if pwd == "" {
+		pwd = cfg.Password()
+	}
+
+	// Surge AnyTLS format: name = anytls, server, port, password=xxx
+	line := fmt.Sprintf("%s = anytls, %s, %d, password=%s",
+		node.Name,
+		node.ServerAddress,
+		node.SubscriptionPort,
+		pwd)
+
+	if cfg.SNI() != "" {
+		line += fmt.Sprintf(", sni=%s", cfg.SNI())
+	}
+
+	if cfg.AllowInsecure() {
+		line += ", skip-cert-verify=true"
 	}
 
 	return line
