@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS users (
     INDEX idx_email_verified (email_verified),
     INDEX idx_password_reset_token (password_reset_token),
     INDEX idx_email_verification_token (email_verification_token)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 `
 }
 
