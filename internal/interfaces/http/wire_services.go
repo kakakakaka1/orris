@@ -26,7 +26,6 @@ import (
 	telegramAdminUsecases "github.com/orris-inc/orris/internal/application/telegram/admin/usecases"
 	"github.com/orris-inc/orris/internal/application/user/helpers"
 	"github.com/orris-inc/orris/internal/application/user/usecases"
-	"github.com/orris-inc/orris/internal/interfaces/adapters"
 	"github.com/orris-inc/orris/internal/infrastructure/auth"
 	"github.com/orris-inc/orris/internal/infrastructure/cache"
 	"github.com/orris-inc/orris/internal/infrastructure/config"
@@ -39,6 +38,7 @@ import (
 	telegramInfra "github.com/orris-inc/orris/internal/infrastructure/telegram"
 	"github.com/orris-inc/orris/internal/infrastructure/template"
 	"github.com/orris-inc/orris/internal/infrastructure/token"
+	"github.com/orris-inc/orris/internal/interfaces/adapters"
 	"github.com/orris-inc/orris/internal/interfaces/http/handlers"
 	adminHandlers "github.com/orris-inc/orris/internal/interfaces/http/handlers/admin"
 	adminResourceGroupHandlers "github.com/orris-inc/orris/internal/interfaces/http/handlers/admin/resourcegroup"
@@ -73,11 +73,13 @@ func (c *Container) initInfrastructure() {
 	log := c.log
 	db := c.db
 
-	// Initialize Redis client
-	c.redis = initRedis(cfg, log)
-
 	// Initialize all repositories
 	c.repos = newRepositories(db, log)
+
+	// The auth middleware reads a session on every authenticated request, so keep
+	// that lookup off the database. Writes evict eagerly, so revoking a session
+	// still takes effect immediately.
+	c.repos.sessionRepo = repository.NewCachedSessionRepository(c.repos.sessionRepo, c.redis, log)
 
 	// Initialize auth services (validates signing key strength in non-debug modes)
 	jwtSvc, err := auth.NewJWTService(
@@ -101,7 +103,7 @@ func (c *Container) initInfrastructure() {
 	c.agentTokenSvc = auth.NewAgentTokenService(cfg.Forward.TokenSigningSecret)
 
 	// Initialize early middlewares
-	c.authMiddleware = middleware.NewAuthMiddleware(c.jwtSvc, c.repos.userRepo, cfg.Auth.Cookie, log)
+	c.authMiddleware = middleware.NewAuthMiddleware(c.jwtSvc, c.repos.userRepo, c.repos.sessionRepo, cfg.Auth.Cookie, log)
 	c.rateLimiter = middleware.NewRateLimiter(c.redis, 100, 1*time.Minute)
 
 	// Initialize hourly traffic cache for Redis-based hourly data queries and daily aggregation
@@ -109,7 +111,10 @@ func (c *Container) initInfrastructure() {
 }
 
 // initRedis creates and tests the Redis client connection.
-func initRedis(cfg *config.Config, log logger.Interface) *redis.Client {
+// NewRedisClient creates and verifies the shared Redis connection. It is created
+// by the caller rather than inside the container so that repositories built
+// outside the container (see cmd/server) can share the same cache.
+func NewRedisClient(cfg *config.Config, log logger.Interface) *redis.Client {
 	redisClient := redis.NewClient(&redis.Options{
 		Addr:     cfg.Redis.GetAddr(),
 		Password: cfg.Redis.Password,

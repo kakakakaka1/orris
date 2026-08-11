@@ -22,6 +22,16 @@ func isValidBrandingFilename(filename string) bool {
 
 // SetupRoutes configures all HTTP routes.
 func (r *Router) SetupRoutes(cfg *config.Config) {
+	// Constrain which upstream addresses may set X-Forwarded-For / X-Real-IP.
+	// Gin trusts every proxy by default, which would let any client dictate the IP
+	// used for rate limiting and audit logs simply by sending the header itself.
+	if err := r.engine.SetTrustedProxies(cfg.Server.TrustedProxies); err != nil {
+		r.logger.Fatalw("invalid server.trusted_proxies configuration",
+			"trusted_proxies", cfg.Server.TrustedProxies,
+			"error", err,
+		)
+	}
+
 	r.engine.Use(middleware.Logger(r.logger))
 	r.engine.Use(middleware.Recovery(r.logger))
 	r.engine.Use(middleware.CORS(cfg.Server.AllowedOrigins))

@@ -29,6 +29,7 @@ INSTALL_MODE=""          # full or custom
 USE_BUILTIN_CADDY="yes"
 USE_BUILTIN_MYSQL="yes"
 USE_BUILTIN_REDIS="yes"
+CADDY_CONFIG_CHANGED="no"
 
 # External service configs
 EXT_MYSQL_HOST=""
@@ -192,6 +193,40 @@ check_dependencies() {
 
 generate_secret() {
     openssl rand -base64 32 2>/dev/null || head -c 32 /dev/urandom | base64
+}
+
+# migrate_caddy_xff adds an explicit X-Forwarded-For override to an existing
+# Caddyfile. Caddy otherwise appends to whatever the client sent, so a spoofed
+# value would still reach the backend as part of the forwarded chain.
+# Idempotent: a Caddyfile that already carries the directive is left untouched.
+migrate_caddy_xff() {
+    [ -f Caddyfile ] || return 0
+
+    if grep -q "header_up X-Forwarded-For" Caddyfile; then
+        return 0
+    fi
+
+    if ! grep -qE '^[[:space:]]*reverse_proxy orris:8080[[:space:]]*$' Caddyfile; then
+        log_warn "Caddyfile layout not recognized, skipping X-Forwarded-For hardening."
+        log_warn "Add 'header_up X-Forwarded-For {remote_host}' to the orris reverse_proxy block manually."
+        return 0
+    fi
+
+    cp Caddyfile Caddyfile.bak
+    awk '
+        /^[[:space:]]*reverse_proxy orris:8080[[:space:]]*$/ {
+            indent = $0
+            sub(/reverse_proxy.*/, "", indent)
+            print indent "reverse_proxy orris:8080 {"
+            print indent "    header_up X-Forwarded-For {remote_host}"
+            print indent "}"
+            next
+        }
+        { print }
+    ' Caddyfile.bak > Caddyfile
+
+    CADDY_CONFIG_CHANGED="yes"
+    log_info "Caddyfile hardened: the proxy now sets X-Forwarded-For (backup: Caddyfile.bak)."
 }
 
 select_install_mode() {
@@ -654,7 +689,11 @@ $DOMAIN {
     # API routes -> backend service
     handle /api/* {
         uri strip_prefix /api
-        reverse_proxy orris:8080
+        reverse_proxy orris:8080 {
+            # Overwrite instead of appending, so a client-supplied X-Forwarded-For
+            # cannot survive into the value the backend reads.
+            header_up X-Forwarded-For {remote_host}
+        }
     }
 
     # All other routes -> frontend service
@@ -674,7 +713,11 @@ EOF
     # API routes -> backend service
     handle /api/* {
         uri strip_prefix /api
-        reverse_proxy orris:8080
+        reverse_proxy orris:8080 {
+            # Overwrite instead of appending, so a client-supplied X-Forwarded-For
+            # cannot survive into the value the backend reads.
+            header_up X-Forwarded-For {remote_host}
+        }
     }
 
     # All other routes -> frontend service
@@ -777,7 +820,7 @@ print_reverse_proxy_examples() {
           proxy_set_header Connection "upgrade";
           proxy_set_header Host \$host;
           proxy_set_header X-Real-IP \$remote_addr;
-          proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-For \$remote_addr;
           proxy_set_header X-Forwarded-Proto \$scheme;
       }
 
@@ -786,7 +829,7 @@ print_reverse_proxy_examples() {
           proxy_pass http://127.0.0.1:3000;
           proxy_set_header Host \$host;
           proxy_set_header X-Real-IP \$remote_addr;
-          proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-For \$remote_addr;
           proxy_set_header X-Forwarded-Proto \$scheme;
       }
   }
@@ -806,7 +849,7 @@ EOF
           proxy_set_header Connection "upgrade";
           proxy_set_header Host \$host;
           proxy_set_header X-Real-IP \$remote_addr;
-          proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-For \$remote_addr;
           proxy_set_header X-Forwarded-Proto \$scheme;
       }
 
@@ -815,7 +858,7 @@ EOF
           proxy_pass http://127.0.0.1:3000;
           proxy_set_header Host \$host;
           proxy_set_header X-Real-IP \$remote_addr;
-          proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-For \$remote_addr;
           proxy_set_header X-Forwarded-Proto \$scheme;
       }
   }
@@ -830,7 +873,9 @@ EOF
   $PROXY_DOMAIN {
       handle /api/* {
           uri strip_prefix /api
-          reverse_proxy 127.0.0.1:8080
+          reverse_proxy 127.0.0.1:8080 {
+              header_up X-Forwarded-For {remote_host}
+          }
       }
 
       handle {
@@ -843,7 +888,9 @@ EOF
   :80 {
       handle /api/* {
           uri strip_prefix /api
-          reverse_proxy 127.0.0.1:8080
+          reverse_proxy 127.0.0.1:8080 {
+              header_up X-Forwarded-For {remote_host}
+          }
       }
 
       handle {
@@ -911,7 +958,7 @@ server {
         proxy_set_header Connection "upgrade";
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For \$remote_addr;
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
 
@@ -920,7 +967,7 @@ server {
         proxy_pass http://127.0.0.1:3000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For \$remote_addr;
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
 }
@@ -940,7 +987,7 @@ server {
         proxy_set_header Connection "upgrade";
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For \$remote_addr;
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
 
@@ -949,7 +996,7 @@ server {
         proxy_pass http://127.0.0.1:3000;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-For \$remote_addr;
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
 }
@@ -962,7 +1009,9 @@ EOF
 $PROXY_DOMAIN {
     handle /api/* {
         uri strip_prefix /api
-        reverse_proxy 127.0.0.1:8080
+        reverse_proxy 127.0.0.1:8080 {
+            header_up X-Forwarded-For {remote_host}
+        }
     }
 
     handle {
@@ -975,7 +1024,9 @@ EOF
 :80 {
     handle /api/* {
         uri strip_prefix /api
-        reverse_proxy 127.0.0.1:8080
+        reverse_proxy 127.0.0.1:8080 {
+            header_up X-Forwarded-For {remote_host}
+        }
     }
 
     handle {
@@ -1175,11 +1226,22 @@ do_update() {
         exit 1
     fi
 
+    # Apply configuration hardening that shipped with newer versions.
+    # Note: server.trusted_proxies needs no .env migration - when the variable is
+    # absent the app falls back to a safe built-in default (loopback + private ranges).
+    migrate_caddy_xff
+
     log_info "Pulling latest images..."
     $DOCKER_COMPOSE pull
 
     log_info "Restarting services with new images..."
     $DOCKER_COMPOSE up -d
+
+    # A mounted Caddyfile change does not trigger a container restart on its own.
+    if [ "$CADDY_CONFIG_CHANGED" == "yes" ]; then
+        log_info "Restarting Caddy to load the updated configuration..."
+        $DOCKER_COMPOSE restart caddy || log_warn "Failed to restart Caddy; restart it manually."
+    fi
 
     log_info "Waiting for services to be ready..."
     sleep 10

@@ -11,6 +11,18 @@ server:
   allowed_origins:
     - "http://localhost:3000"
   frontend_callback_url: "http://localhost:3000/oauth/callback"
+  # CIDRs allowed to set X-Forwarded-For / X-Real-IP. Requests from anywhere else
+  # have those headers ignored, so the client IP behind rate limiting and audit
+  # logs cannot be spoofed. Defaults to loopback + private ranges (covers the
+  # bundled Caddy container). Narrow this to your reverse proxy, or set to []
+  # when the app is exposed directly with no proxy in front.
+  trusted_proxies:
+    - "127.0.0.0/8"
+    - "::1/128"
+    - "10.0.0.0/8"
+    - "172.16.0.0/12"
+    - "192.168.0.0/16"
+    - "fc00::/7"
 
 database:
   host: "localhost"

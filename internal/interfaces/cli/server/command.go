@@ -93,8 +93,18 @@ func run(cmd *cobra.Command, args []string) error {
 		log.Fatalw("migration handling failed", "error", err)
 	}
 
+	redisClient := httpRouter.NewRedisClient(cfg, log)
+	defer redisClient.Close()
+
 	userRepo := repository.NewUserRepository(database.Get(), log)
-	sessionRepo := repository.NewSessionRepository(database.Get())
+	// Share the cached session repository with the HTTP container: ChangePassword
+	// revokes every session of the user, and that eviction must reach the same
+	// cache the auth middleware reads from.
+	sessionRepo := repository.NewCachedSessionRepository(
+		repository.NewSessionRepository(database.Get()),
+		redisClient,
+		log,
+	)
 	hasher := auth.NewBcryptPasswordHasher(cfg.Auth.Password.BcryptCost)
 
 	userAppService := userApp.NewServiceDDD(userRepo, sessionRepo, hasher, log)
@@ -104,7 +114,7 @@ func run(cmd *cobra.Command, args []string) error {
 		log.Warnw("failed to seed admin user", "error", err)
 	}
 
-	router := httpRouter.NewRouter(userAppService, database.Get(), cfg, log)
+	router := httpRouter.NewRouter(userAppService, database.Get(), redisClient, cfg, log)
 	router.SetupRoutes(cfg)
 
 	ctx := context.Background()

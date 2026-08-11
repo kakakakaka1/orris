@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
 	forwardServices "github.com/orris-inc/orris/internal/application/forward/services"
@@ -109,8 +110,8 @@ type Router struct {
 
 // NewRouter creates a new HTTP router with all dependencies.
 // The function signature is preserved for backward compatibility with command.go.
-func NewRouter(userService *user.ServiceDDD, db *gorm.DB, cfg *config.Config, log logger.Interface) *Router {
-	c := NewContainer(userService, db, cfg, log)
+func NewRouter(userService *user.ServiceDDD, db *gorm.DB, redisClient *redis.Client, cfg *config.Config, log logger.Interface) *Router {
+	c := NewContainer(userService, db, redisClient, cfg, log)
 
 	return &Router{
 		engine:                         c.engine,

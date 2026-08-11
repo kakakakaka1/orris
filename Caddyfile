@@ -5,7 +5,11 @@
     # API routes -> backend service
     handle /api/* {
         uri strip_prefix /api
-        reverse_proxy orris:8080
+        reverse_proxy orris:8080 {
+            # Overwrite instead of appending, so a client-supplied X-Forwarded-For
+            # cannot survive into the value the backend reads.
+            header_up X-Forwarded-For {remote_host}
+        }
     }
 
     # All other routes -> frontend service
@@ -18,7 +22,11 @@ orris.example.com {
     # API routes -> backend service
     handle /api/* {
         uri strip_prefix /api
-        reverse_proxy orris:8080
+        reverse_proxy orris:8080 {
+            # Overwrite instead of appending, so a client-supplied X-Forwarded-For
+            # cannot survive into the value the backend reads.
+            header_up X-Forwarded-For {remote_host}
+        }
     }
 
     # All other routes -> frontend service

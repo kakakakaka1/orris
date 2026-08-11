@@ -10,6 +10,11 @@ type ServerConfig struct {
 	BaseURL             string   `mapstructure:"base_url"`
 	AllowedOrigins      []string `mapstructure:"allowed_origins"`
 	FrontendCallbackURL string   `mapstructure:"frontend_callback_url"`
+	// TrustedProxies lists the CIDRs allowed to set X-Forwarded-For / X-Real-IP.
+	// Requests arriving from any other address have their forwarding headers ignored,
+	// so the client IP used for rate limiting and audit logs cannot be spoofed.
+	// An empty list disables proxy trust entirely (the socket peer address is used).
+	TrustedProxies []string `mapstructure:"trusted_proxies"`
 }
 
 func (s *ServerConfig) GetAddr() string {

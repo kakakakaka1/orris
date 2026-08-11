@@ -130,10 +130,11 @@ type Container struct {
 // NewContainer creates a new Container with all dependencies wired together.
 // The initialization order follows the original NewRouter() logic to preserve
 // the complex inter-dependencies between components.
-func NewContainer(userService *user.ServiceDDD, db *gorm.DB, cfg *config.Config, log logger.Interface) *Container {
+func NewContainer(userService *user.ServiceDDD, db *gorm.DB, redisClient *redis.Client, cfg *config.Config, log logger.Interface) *Container {
 	c := &Container{
 		engine:      gin.New(),
 		db:          db,
+		redis:       redisClient,
 		cfg:         cfg,
 		log:         log,
 		userService: userService,
@@ -165,4 +166,3 @@ func NewContainer(userService *user.ServiceDDD, db *gorm.DB, cfg *config.Config,
 
 	return c
 }
-

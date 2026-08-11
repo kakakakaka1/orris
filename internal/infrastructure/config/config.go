@@ -102,6 +102,17 @@ func setDefaults() {
 	viper.SetDefault("server.base_url", "")
 	viper.SetDefault("server.allowed_origins", []string{})
 	viper.SetDefault("server.frontend_callback_url", "")
+	// Trust only loopback and private ranges by default: this covers the bundled
+	// Caddy container and typical internal reverse proxies, while a client coming
+	// straight off the internet cannot spoof its IP via X-Forwarded-For.
+	viper.SetDefault("server.trusted_proxies", []string{
+		"127.0.0.0/8",
+		"::1/128",
+		"10.0.0.0/8",
+		"172.16.0.0/12",
+		"192.168.0.0/16",
+		"fc00::/7",
+	})
 
 	// Database defaults
 	viper.SetDefault("database.host", "localhost")
