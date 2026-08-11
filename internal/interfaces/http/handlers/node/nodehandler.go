@@ -274,7 +274,6 @@ func (h *NodeHandler) UpdateNodeStatus(c *gin.Context) {
 	utils.SuccessResponse(c, http.StatusOK, "Node status updated successfully", result)
 }
 
-
 type CreateNodeRequest struct {
 	Name             string            `json:"name" binding:"required" example:"US-Node-01"`
 	ServerAddress    string            `json:"server_address,omitempty" example:"1.2.3.4"`

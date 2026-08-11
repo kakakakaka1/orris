@@ -43,12 +43,12 @@ const (
 	TableForwardRules           = "forward_rules"
 	TableForwardAgents          = "forward_agents"
 	TableResourceGroups         = "resource_groups"
-	TableSubscriptionUsageStats  = "subscription_usage_stats"
-	TableExternalForwardRules    = "external_forward_rules"
-	TablePasskeyCredentials      = "passkey_credentials"
-	TableUSDTAmountSuffixes      = "usdt_amount_suffixes"
-	TableUserAnnouncementReads   = "user_announcement_reads"
-	TableNodeAnyTLSConfigs       = "node_anytls_configs"
+	TableSubscriptionUsageStats = "subscription_usage_stats"
+	TableExternalForwardRules   = "external_forward_rules"
+	TablePasskeyCredentials     = "passkey_credentials"
+	TableUSDTAmountSuffixes     = "usdt_amount_suffixes"
+	TableUserAnnouncementReads  = "user_announcement_reads"
+	TableNodeAnyTLSConfigs      = "node_anytls_configs"
 
 	// Default values
 	DefaultCurrency = "CNY"

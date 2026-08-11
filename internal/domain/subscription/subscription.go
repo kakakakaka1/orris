@@ -27,48 +27,48 @@ func generateLinkToken() (string, error) {
 
 // SubscriptionReconstructParams contains all parameters needed to reconstruct a Subscription from persistence
 type SubscriptionReconstructParams struct {
-	ID                      uint
-	UserID                  uint
-	PlanID                  uint
-	SubjectType             string
-	SubjectID               uint
-	SID                     string
-	UUID                    string
-	LinkToken               string
-	Status                  vo.SubscriptionStatus
-	StartDate               time.Time
-	EndDate                 time.Time
-	AutoRenew               bool
-	CurrentPeriodStart      time.Time
-	CurrentPeriodEnd        time.Time
-	CancelledAt             *time.Time
-	CancelReason            *string
-	Metadata                map[string]interface{}
-	Version                 int
-	CreatedAt               time.Time
-	UpdatedAt               time.Time
-	BillingCycle            *vo.BillingCycle
-	TrafficLimitOverride    *uint64
-	TrafficUsedAdjustment   int64
+	ID                    uint
+	UserID                uint
+	PlanID                uint
+	SubjectType           string
+	SubjectID             uint
+	SID                   string
+	UUID                  string
+	LinkToken             string
+	Status                vo.SubscriptionStatus
+	StartDate             time.Time
+	EndDate               time.Time
+	AutoRenew             bool
+	CurrentPeriodStart    time.Time
+	CurrentPeriodEnd      time.Time
+	CancelledAt           *time.Time
+	CancelReason          *string
+	Metadata              map[string]interface{}
+	Version               int
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
+	BillingCycle          *vo.BillingCycle
+	TrafficLimitOverride  *uint64
+	TrafficUsedAdjustment int64
 }
 
 // Subscription represents the subscription aggregate root
 type Subscription struct {
-	id                 uint
-	sid                string // Stripe-style ID: sub_xxx
-	uuid               string // unique identifier for internal use
-	linkToken          string // secure token for subscription link authentication (256 bits, resettable)
-	userID             uint   // Deprecated: use subjectID instead. Kept for backward compatibility
-	subjectType        string // Type of subject (user, user_group, etc.)
-	subjectID          uint   // ID of the subject
-	planID             uint
-	status             vo.SubscriptionStatus
-	startDate          time.Time
-	endDate            time.Time
-	autoRenew          bool
-	currentPeriodStart time.Time
-	currentPeriodEnd   time.Time
-	billingCycle       *vo.BillingCycle
+	id                    uint
+	sid                   string // Stripe-style ID: sub_xxx
+	uuid                  string // unique identifier for internal use
+	linkToken             string // secure token for subscription link authentication (256 bits, resettable)
+	userID                uint   // Deprecated: use subjectID instead. Kept for backward compatibility
+	subjectType           string // Type of subject (user, user_group, etc.)
+	subjectID             uint   // ID of the subject
+	planID                uint
+	status                vo.SubscriptionStatus
+	startDate             time.Time
+	endDate               time.Time
+	autoRenew             bool
+	currentPeriodStart    time.Time
+	currentPeriodEnd      time.Time
+	billingCycle          *vo.BillingCycle
 	cancelledAt           *time.Time
 	cancelReason          *string
 	trafficLimitOverride  *uint64 // nil = use plan default; non-nil = override plan limit (0 = unlimited)

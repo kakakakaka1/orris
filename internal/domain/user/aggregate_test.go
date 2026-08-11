@@ -352,12 +352,12 @@ func TestReconstructUserWithAuth_ValidWithAuthData(t *testing.T) {
 		time.Now(), time.Now(),
 		1,
 		&UserAuthData{
-			PasswordHash:           &hash,
-			EmailVerified:          true,
-			FailedLoginAttempts:    3,
-			LastPasswordChangeAt:   &lastPwChange,
-			LockedUntil:            &lockedUntil,
-			AnnouncementsReadAt:    &readAt,
+			PasswordHash:         &hash,
+			EmailVerified:        true,
+			FailedLoginAttempts:  3,
+			LastPasswordChangeAt: &lastPwChange,
+			LockedUntil:          &lockedUntil,
+			AnnouncementsReadAt:  &readAt,
 		},
 	)
 
@@ -710,11 +710,11 @@ func TestUser_StateTransitions_Comprehensive(t *testing.T) {
 		// From Pending
 		{vo.StatusPending, "activate", false},
 		{vo.StatusPending, "deactivate", false},
-		{vo.StatusPending, "suspend", true},   // not allowed
+		{vo.StatusPending, "suspend", true}, // not allowed
 		{vo.StatusPending, "delete", false},
 
 		// From Active
-		{vo.StatusActive, "activate", false},   // idempotent
+		{vo.StatusActive, "activate", false}, // idempotent
 		{vo.StatusActive, "deactivate", false},
 		{vo.StatusActive, "suspend", false},
 		{vo.StatusActive, "delete", false},
@@ -722,7 +722,7 @@ func TestUser_StateTransitions_Comprehensive(t *testing.T) {
 		// From Inactive
 		{vo.StatusInactive, "activate", false},
 		{vo.StatusInactive, "deactivate", false}, // idempotent
-		{vo.StatusInactive, "suspend", true},      // not allowed
+		{vo.StatusInactive, "suspend", true},     // not allowed
 		{vo.StatusInactive, "delete", false},
 
 		// From Suspended
@@ -1446,7 +1446,7 @@ func TestNewEmail_Boundary(t *testing.T) {
 		{"no domain", "user@", true},
 		{"no local part", "@domain.com", true},
 		{"spaces only", "   ", true},
-		{"max length", strings.Repeat("a", 243) + "@example.com", false}, // 255 total
+		{"max length", strings.Repeat("a", 243) + "@example.com", false},        // 255 total
 		{"exceeds max length", strings.Repeat("a", 244) + "@example.com", true}, // 256 total
 	}
 

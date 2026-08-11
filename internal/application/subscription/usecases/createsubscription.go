@@ -27,7 +27,7 @@ type CreateSubscriptionCommand struct {
 
 type CreateSubscriptionResult struct {
 	Subscription *subscription.Subscription
-	Plan         *subscription.Plan             // Plan used for this subscription (for DTO device_limit)
+	Plan         *subscription.Plan // Plan used for this subscription (for DTO device_limit)
 	Token        *subscription.SubscriptionToken
 	PlainToken   string // Plain token value, only available at creation time
 }

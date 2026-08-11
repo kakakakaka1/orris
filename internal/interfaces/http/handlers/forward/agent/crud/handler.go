@@ -446,4 +446,3 @@ func (h *Handler) GetRuleOverallStatus(c *gin.Context) {
 
 	utils.SuccessResponse(c, http.StatusOK, "", result)
 }
-

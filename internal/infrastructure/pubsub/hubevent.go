@@ -56,7 +56,7 @@ type AgentCommandEvent struct {
 
 // NodeCommandEvent wraps a command to be forwarded to a node via Redis PubSub.
 type NodeCommandEvent struct {
-	NodeID  uint                    `json:"node_id"`
+	NodeID  uint                     `json:"node_id"`
 	Command *nodedto.NodeCommandData `json:"command"`
 }
 

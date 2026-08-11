@@ -11,25 +11,25 @@ type AdminDashboardResponse struct {
 
 // DashboardUsersSection holds user-related dashboard metrics.
 type DashboardUsersSection struct {
-	Total      int64 `json:"total"`
-	NewToday   int64 `json:"new_today"`
+	Total       int64 `json:"total"`
+	NewToday    int64 `json:"new_today"`
 	NewThisWeek int64 `json:"new_this_week"`
 }
 
 // DashboardSubscriptionsSection holds subscription-related dashboard metrics.
 type DashboardSubscriptionsSection struct {
-	Active         int64 `json:"active"`
-	Expired        int64 `json:"expired"`
-	Suspended      int64 `json:"suspended"`
-	PendingPayment int64 `json:"pending_payment"`
+	Active          int64 `json:"active"`
+	Expired         int64 `json:"expired"`
+	Suspended       int64 `json:"suspended"`
+	PendingPayment  int64 `json:"pending_payment"`
 	ExpiringIn7Days int64 `json:"expiring_in_7_days"`
 }
 
 // DashboardNodesSection holds node-related dashboard metrics.
 type DashboardNodesSection struct {
-	Total                   int64 `json:"total"`
-	Online                  int64 `json:"online"`
-	Offline                 int64 `json:"offline"`
+	Total                    int64 `json:"total"`
+	Online                   int64 `json:"online"`
+	Offline                  int64 `json:"offline"`
 	TotalOnlineSubscriptions int64 `json:"total_online_subscriptions"`
 }
 

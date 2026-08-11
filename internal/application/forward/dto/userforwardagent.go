@@ -10,12 +10,12 @@ import (
 // UserForwardAgentDTO represents a forward agent from user's perspective.
 // This DTO hides sensitive fields like token_hash and api_token.
 type UserForwardAgentDTO struct {
-	ID            string              `json:"id"`                       // Stripe-style prefixed ID (e.g., "fa_xK9mP2vL3nQ")
-	Name          string              `json:"name"`                     // Agent name
-	PublicAddress string              `json:"public_address,omitempty"` // Public address for client connections
-	Status        string              `json:"status"`                   // enabled or disabled
-	Groups        []UserGroupInfoDTO  `json:"groups,omitempty"`         // Resource groups this agent belongs to
-	CreatedAt     time.Time           `json:"created_at"`
+	ID            string             `json:"id"`                       // Stripe-style prefixed ID (e.g., "fa_xK9mP2vL3nQ")
+	Name          string             `json:"name"`                     // Agent name
+	PublicAddress string             `json:"public_address,omitempty"` // Public address for client connections
+	Status        string             `json:"status"`                   // enabled or disabled
+	Groups        []UserGroupInfoDTO `json:"groups,omitempty"`         // Resource groups this agent belongs to
+	CreatedAt     time.Time          `json:"created_at"`
 
 	internalGroupIDs []uint `json:"-"` // internal resource group IDs for lookup
 }

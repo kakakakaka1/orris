@@ -256,7 +256,6 @@ func (h *PlanHandler) DeletePlan(c *gin.Context) {
 	utils.NoContentResponse(c)
 }
 
-
 func parseListPlansQuery(c *gin.Context) (*usecases.ListPlansQuery, error) {
 	p := utils.ParsePagination(c)
 	query := &usecases.ListPlansQuery{

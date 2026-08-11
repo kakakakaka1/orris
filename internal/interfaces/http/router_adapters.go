@@ -9,10 +9,10 @@ import (
 	"github.com/orris-inc/orris/internal/domain/forward"
 	"github.com/orris-inc/orris/internal/domain/node"
 	"github.com/orris-inc/orris/internal/domain/setting"
-	sharedConfig "github.com/orris-inc/orris/internal/shared/config"
 	"github.com/orris-inc/orris/internal/infrastructure/auth"
 	telegramInfra "github.com/orris-inc/orris/internal/infrastructure/telegram"
 	"github.com/orris-inc/orris/internal/shared/authorization"
+	sharedConfig "github.com/orris-inc/orris/internal/shared/config"
 )
 
 // jwtServiceAdapter adapts JWTService to usecases.JWTService interface.

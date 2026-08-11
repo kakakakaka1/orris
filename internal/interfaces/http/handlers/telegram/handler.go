@@ -691,4 +691,3 @@ func (h *Handler) answerCallback(callbackQueryID, text string, showAlert bool) {
 		_ = h.callbackAnswerer.AnswerCallbackQuery(callbackQueryID, text, showAlert)
 	}
 }
-

@@ -25,13 +25,13 @@ var validAnyTLSFingerprints = map[string]bool{
 // AnyTLSConfig represents the AnyTLS protocol configuration.
 // This is an immutable value object following DDD principles.
 type AnyTLSConfig struct {
-	password                  string
-	sni                       string
-	allowInsecure             bool
-	fingerprint               string
-	idleSessionCheckInterval  string // duration string, e.g. "30s"
-	idleSessionTimeout        string // duration string, e.g. "30s"
-	minIdleSession            int
+	password                 string
+	sni                      string
+	allowInsecure            bool
+	fingerprint              string
+	idleSessionCheckInterval string // duration string, e.g. "30s"
+	idleSessionTimeout       string // duration string, e.g. "30s"
+	minIdleSession           int
 }
 
 // NewAnyTLSConfig creates a new AnyTLSConfig with validation

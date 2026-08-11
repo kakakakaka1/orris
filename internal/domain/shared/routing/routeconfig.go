@@ -6,10 +6,10 @@ import "fmt"
 // It specifies how traffic should be routed based on matching rules.
 // Compatible with sing-box route configuration.
 type RouteConfig struct {
-	rules            []RouteRule      // Ordered list of routing rules
-	finalAction      OutboundType     // Default action when no rules match
-	customOutbounds  []CustomOutbound // User-defined outbound configurations referenced by route rules via custom_xxx tags
-	ruleSetEntries   []RuleSetEntry   // Remote rule-set sources referenced by rules via rule_set tags
+	rules           []RouteRule      // Ordered list of routing rules
+	finalAction     OutboundType     // Default action when no rules match
+	customOutbounds []CustomOutbound // User-defined outbound configurations referenced by route rules via custom_xxx tags
+	ruleSetEntries  []RuleSetEntry   // Remote rule-set sources referenced by rules via rule_set tags
 }
 
 // NewRouteConfig creates a new route configuration

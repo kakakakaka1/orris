@@ -38,9 +38,9 @@ func TestMockForwardRuleRepository(t *testing.T) {
 		vo.IPVersionAuto,
 		vo.ForwardProtocolTCP,
 		"test remark",
-		nil,                        // trafficMultiplier
-		0,                          // sortOrder
-		vo.AddressPreferenceAuto,   // addressPreference
+		nil,                      // trafficMultiplier
+		0,                        // sortOrder
+		vo.AddressPreferenceAuto, // addressPreference
 		func() (string, error) { return "fr_test123", nil },
 	)
 	if err != nil {
@@ -137,9 +137,9 @@ func TestMockForwardRuleRepository_ErrorInjection(t *testing.T) {
 		vo.IPVersionAuto,
 		vo.ForwardProtocolTCP,
 		"test remark",
-		nil,                        // trafficMultiplier
-		0,                          // sortOrder
-		vo.AddressPreferenceAuto,   // addressPreference
+		nil,                      // trafficMultiplier
+		0,                        // sortOrder
+		vo.AddressPreferenceAuto, // addressPreference
 		func() (string, error) { return "fr_test123", nil },
 	)
 	if err != nil {

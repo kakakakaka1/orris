@@ -61,36 +61,36 @@ type NodeConfigSyncData struct {
 
 // NodeConfigData represents the node configuration to sync.
 type NodeConfigData struct {
-	NodeSID           string          `json:"node_id"`
-	Status            string          `json:"status"`   // active, inactive, maintenance
-	Protocol          string          `json:"protocol"`
-	ServerHost        string          `json:"server_host"`
-	ServerPort        int             `json:"server_port"`
-	EncryptionMethod  string          `json:"encryption_method,omitempty"`
-	ServerKey         string          `json:"server_key,omitempty"`
-	TransportProtocol string          `json:"transport_protocol"`
-	Host              string          `json:"host,omitempty"`
-	Path              string          `json:"path,omitempty"`
-	ServiceName       string          `json:"service_name,omitempty"`
-	SNI               string          `json:"sni,omitempty"`
-	AllowInsecure     bool            `json:"allow_insecure"`
+	NodeSID           string                `json:"node_id"`
+	Status            string                `json:"status"` // active, inactive, maintenance
+	Protocol          string                `json:"protocol"`
+	ServerHost        string                `json:"server_host"`
+	ServerPort        int                   `json:"server_port"`
+	EncryptionMethod  string                `json:"encryption_method,omitempty"`
+	ServerKey         string                `json:"server_key,omitempty"`
+	TransportProtocol string                `json:"transport_protocol"`
+	Host              string                `json:"host,omitempty"`
+	Path              string                `json:"path,omitempty"`
+	ServiceName       string                `json:"service_name,omitempty"`
+	SNI               string                `json:"sni,omitempty"`
+	AllowInsecure     bool                  `json:"allow_insecure"`
 	Route             *RouteConfigDTO       `json:"route,omitempty"`               // Routing configuration for traffic splitting
 	DNS               *DnsConfigDTO         `json:"dns,omitempty"`                 // DNS configuration for DNS-based unlocking
 	Outbounds         []OutboundDTO         `json:"outbounds,omitempty"`           // Outbound configs for nodes referenced in route rules
 	ForwardRuleRoutes []ForwardRuleRouteDTO `json:"forward_rule_routes,omitempty"` // Per-forward-rule routing configurations
 
 	// VLESS specific fields
-	Flow        string `json:"flow,omitempty"`         // VLESS flow control (xtls-rprx-vision)
-	Security    string `json:"security,omitempty"`     // Security type (none, tls, reality)
-	Fingerprint string `json:"fingerprint,omitempty"`  // TLS fingerprint
-	PrivateKey  string `json:"private_key,omitempty"`  // Reality private key
-	PublicKey   string `json:"public_key,omitempty"`   // Reality public key
-	ShortID     string `json:"short_id,omitempty"`     // Reality short ID
-	SpiderX     string `json:"spider_x,omitempty"`     // Reality spider X
+	Flow        string `json:"flow,omitempty"`        // VLESS flow control (xtls-rprx-vision)
+	Security    string `json:"security,omitempty"`    // Security type (none, tls, reality)
+	Fingerprint string `json:"fingerprint,omitempty"` // TLS fingerprint
+	PrivateKey  string `json:"private_key,omitempty"` // Reality private key
+	PublicKey   string `json:"public_key,omitempty"`  // Reality public key
+	ShortID     string `json:"short_id,omitempty"`    // Reality short ID
+	SpiderX     string `json:"spider_x,omitempty"`    // Reality spider X
 
 	// VMess specific fields
-	AlterID      int  `json:"alter_id,omitempty"`      // VMess alter ID
-	TLS          bool `json:"tls,omitempty"`           // Enable TLS (VMess)
+	AlterID int  `json:"alter_id,omitempty"` // VMess alter ID
+	TLS     bool `json:"tls,omitempty"`      // Enable TLS (VMess)
 
 	// Hysteria2 specific fields
 	Password          string `json:"password,omitempty"`           // Hysteria2/TUIC password
@@ -109,7 +109,7 @@ type NodeConfigData struct {
 	// AnyTLS specific fields
 	AnyTLSIdleSessionCheckInterval string `json:"anytls_idle_session_check_interval,omitempty"` // Idle session check interval
 	AnyTLSIdleSessionTimeout       string `json:"anytls_idle_session_timeout,omitempty"`        // Idle session timeout
-	AnyTLSMinIdleSession           int    `json:"anytls_min_idle_session,omitempty"`             // Minimum idle sessions
+	AnyTLSMinIdleSession           int    `json:"anytls_min_idle_session,omitempty"`            // Minimum idle sessions
 }
 
 // ToNodeConfigData converts a domain node entity to NodeConfigData for Hub sync.

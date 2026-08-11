@@ -39,10 +39,10 @@ type UpdateForwardRuleCommand struct {
 	TrafficMultiplier   *float64 // nil means no update (0-1000000)
 	SortOrder           *int     // nil means no update
 	Remark              *string
-	GroupSIDs           *[]string                // nil means no update, empty slice means clear, non-nil means set
-	Route               *nodedto.RouteConfigDTO  // nil means no update, non-nil means set
-	ClearRoute          *bool                    // true means clear route config
-	AddressPreference   *string                  // nil means no update; auto, public, tunnel
+	GroupSIDs           *[]string               // nil means no update, empty slice means clear, non-nil means set
+	Route               *nodedto.RouteConfigDTO // nil means no update, non-nil means set
+	ClearRoute          *bool                   // true means clear route config
+	AddressPreference   *string                 // nil means no update; auto, public, tunnel
 }
 
 // UpdateForwardRuleUseCase handles forward rule updates.

@@ -111,4 +111,3 @@ type ForwardRuleOrder struct {
 	RuleID    string `json:"rule_id" binding:"required" example:"fr_xK9mP2vL3nQ"`
 	SortOrder int    `json:"sort_order" binding:"gte=0" example:"100"`
 }
-

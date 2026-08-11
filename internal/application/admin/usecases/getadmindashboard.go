@@ -70,19 +70,19 @@ func (uc *GetAdminDashboardUseCase) Execute(ctx context.Context) (*dto.AdminDash
 	onlineThreshold := now.Add(-5 * time.Minute)
 
 	var (
-		totalUsers    int64
-		newToday      int64
-		newThisWeek   int64
-		activeSubs    int64
-		expiredSubs   int64
-		suspendedSubs int64
-		pendingSubs   int64
-		expiring7Days int64
-		totalNodes    int64
-		onlineNodes   int64
-		totalRules    int64
-		totalAgents   int64
-		onlineAgents  int64
+		totalUsers               int64
+		newToday                 int64
+		newThisWeek              int64
+		activeSubs               int64
+		expiredSubs              int64
+		suspendedSubs            int64
+		pendingSubs              int64
+		expiring7Days            int64
+		totalNodes               int64
+		onlineNodes              int64
+		totalRules               int64
+		totalAgents              int64
+		onlineAgents             int64
 		trafficUpload            uint64
 		trafficDownload          uint64
 		trafficTotal             uint64

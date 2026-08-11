@@ -541,7 +541,7 @@ func (r *NodeRepositoryImpl) FindExpiringNodes(ctx context.Context, withinDays i
 	if err := r.db.WithContext(ctx).
 		Model(&models.NodeModel{}).
 		Select("id, sid, name, expires_at, cost_label").
-		Where("status = ?", "active").       // Only active nodes need expiring notification
+		Where("status = ?", "active"). // Only active nodes need expiring notification
 		Where("expires_at IS NOT NULL").
 		Where("expires_at > ?", now).        // Not already expired
 		Where("expires_at <= ?", threshold). // Within threshold

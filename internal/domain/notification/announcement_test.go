@@ -825,10 +825,10 @@ func TestAnnouncement_ClearEvents(t *testing.T) {
 // transition matrix.
 func TestAnnouncement_StatusTransitions_Comprehensive(t *testing.T) {
 	tests := []struct {
-		name        string
-		from        vo.AnnouncementStatus
-		to          vo.AnnouncementStatus
-		canTransit  bool
+		name       string
+		from       vo.AnnouncementStatus
+		to         vo.AnnouncementStatus
+		canTransit bool
 	}{
 		// From Draft
 		{"Draft_to_Published", vo.AnnouncementStatusDraft, vo.AnnouncementStatusPublished, true},

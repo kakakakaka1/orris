@@ -253,7 +253,12 @@ func ValidateAPIURL(rawURL string) error {
 
 // ShellQuote wraps a string in single quotes with proper escaping,
 // making it safe for interpolation into shell commands.
-// Any existing single quotes are replaced with the standard shell idiom '\'' .
+// An embedded single quote is escaped the standard shell way: close the quoted
+// run, emit a backslash-escaped quote, then reopen it.
+//
+// The escape sequence is spelled out in prose rather than shown literally
+// because gofmt rewrites a bare pair of single quotes in a doc comment into a
+// Unicode closing quote.
 func ShellQuote(s string) string {
 	return "'" + strings.ReplaceAll(s, "'", "'\\''") + "'"
 }

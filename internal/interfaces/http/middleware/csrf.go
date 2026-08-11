@@ -21,8 +21,8 @@ var csrfExactPaths = map[string]struct{}{
 	"/auth/refresh":         {},
 	// Logout is exempt because the CSRF cookie may have expired alongside the access token.
 	// It is already protected by RequireAuth middleware.
-	"/auth/logout":          {},
-	"/payments/callback":    {},
+	"/auth/logout":       {},
+	"/payments/callback": {},
 }
 
 // csrfPrefixPaths lists path prefixes exempt from CSRF validation.

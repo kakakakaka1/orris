@@ -33,7 +33,6 @@ type PasskeyHandler struct {
 	sessionConfig          config.SessionConfig
 }
 
-
 // NewPasskeyHandler creates a new PasskeyHandler
 func NewPasskeyHandler(
 	startRegistrationUC *usecases.StartPasskeyRegistrationUseCase,

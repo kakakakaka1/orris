@@ -219,9 +219,9 @@ func TestReconstructSubscriptionWithParams_Errors(t *testing.T) {
 	}
 
 	tests := []struct {
-		name    string
-		modify  func(p *SubscriptionReconstructParams)
-		errMsg  string
+		name   string
+		modify func(p *SubscriptionReconstructParams)
+		errMsg string
 	}{
 		{
 			name:   "zero ID",

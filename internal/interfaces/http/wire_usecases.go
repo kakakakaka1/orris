@@ -65,74 +65,74 @@ type allUseCases struct {
 	quotaService *subscriptionUsecases.QuotaServiceImpl
 
 	// Payment
-	createPaymentUC   *paymentUsecases.CreatePaymentUseCase
-	handleCallbackUC  *paymentUsecases.HandlePaymentCallbackUseCase
-	expirePaymentsUC  *paymentUsecases.ExpirePaymentsUseCase
+	createPaymentUC    *paymentUsecases.CreatePaymentUseCase
+	handleCallbackUC   *paymentUsecases.HandlePaymentCallbackUseCase
+	expirePaymentsUC   *paymentUsecases.ExpirePaymentsUseCase
 	cancelUnpaidSubsUC *paymentUsecases.CancelUnpaidSubscriptionsUseCase
-	retryActivationUC *paymentUsecases.RetrySubscriptionActivationUseCase
+	retryActivationUC  *paymentUsecases.RetrySubscriptionActivationUseCase
 
 	// Node
-	createNodeUC                *nodeUsecases.CreateNodeUseCase
-	getNodeUC                   *nodeUsecases.GetNodeUseCase
-	updateNodeUC                *nodeUsecases.UpdateNodeUseCase
-	deleteNodeUC                *nodeUsecases.DeleteNodeUseCase
-	listNodesUC                 *nodeUsecases.ListNodesUseCase
-	generateNodeTokenUC         *nodeUsecases.GenerateNodeTokenUseCase
-	generateNodeInstallScriptUC *nodeUsecases.GenerateNodeInstallScriptUseCase
+	createNodeUC                 *nodeUsecases.CreateNodeUseCase
+	getNodeUC                    *nodeUsecases.GetNodeUseCase
+	updateNodeUC                 *nodeUsecases.UpdateNodeUseCase
+	deleteNodeUC                 *nodeUsecases.DeleteNodeUseCase
+	listNodesUC                  *nodeUsecases.ListNodesUseCase
+	generateNodeTokenUC          *nodeUsecases.GenerateNodeTokenUseCase
+	generateNodeInstallScriptUC  *nodeUsecases.GenerateNodeInstallScriptUseCase
 	generateBatchInstallScriptUC *nodeUsecases.GenerateBatchInstallScriptUseCase
-	validateNodeTokenUC         *nodeUsecases.ValidateNodeTokenUseCase
-	getNodeConfigUC             *nodeUsecases.GetNodeConfigUseCase
-	getNodeSubscriptionsUC      *nodeUsecases.GetNodeSubscriptionsUseCase
-	generateSubscriptionUC      *nodeUsecases.GenerateSubscriptionUseCase
-	reportSubscriptionUsageUC   *nodeUsecases.ReportSubscriptionUsageUseCase
-	reportNodeStatusUC          *nodeUsecases.ReportNodeStatusUseCase
-	reportOnlineSubscriptionsUC *nodeUsecases.ReportOnlineSubscriptionsUseCase
+	validateNodeTokenUC          *nodeUsecases.ValidateNodeTokenUseCase
+	getNodeConfigUC              *nodeUsecases.GetNodeConfigUseCase
+	getNodeSubscriptionsUC       *nodeUsecases.GetNodeSubscriptionsUseCase
+	generateSubscriptionUC       *nodeUsecases.GenerateSubscriptionUseCase
+	reportSubscriptionUsageUC    *nodeUsecases.ReportSubscriptionUsageUseCase
+	reportNodeStatusUC           *nodeUsecases.ReportNodeStatusUseCase
+	reportOnlineSubscriptionsUC  *nodeUsecases.ReportOnlineSubscriptionsUseCase
 
 	// User Node
-	createUserNodeUC             *nodeUsecases.CreateUserNodeUseCase
-	listUserNodesUC              *nodeUsecases.ListUserNodesUseCase
-	getUserNodeUC                *nodeUsecases.GetUserNodeUseCase
-	updateUserNodeUC             *nodeUsecases.UpdateUserNodeUseCase
-	deleteUserNodeUC             *nodeUsecases.DeleteUserNodeUseCase
-	regenerateUserNodeTokenUC    *nodeUsecases.RegenerateUserNodeTokenUseCase
-	getUserNodeUsageUC           *nodeUsecases.GetUserNodeUsageUseCase
-	getUserNodeInstallScriptUC   *nodeUsecases.GetUserNodeInstallScriptUseCase
-	getUserBatchInstallScriptUC  *nodeUsecases.GetUserBatchInstallScriptUseCase
+	createUserNodeUC            *nodeUsecases.CreateUserNodeUseCase
+	listUserNodesUC             *nodeUsecases.ListUserNodesUseCase
+	getUserNodeUC               *nodeUsecases.GetUserNodeUseCase
+	updateUserNodeUC            *nodeUsecases.UpdateUserNodeUseCase
+	deleteUserNodeUC            *nodeUsecases.DeleteUserNodeUseCase
+	regenerateUserNodeTokenUC   *nodeUsecases.RegenerateUserNodeTokenUseCase
+	getUserNodeUsageUC          *nodeUsecases.GetUserNodeUsageUseCase
+	getUserNodeInstallScriptUC  *nodeUsecases.GetUserNodeInstallScriptUseCase
+	getUserBatchInstallScriptUC *nodeUsecases.GetUserBatchInstallScriptUseCase
 
 	// Forward Agent
-	createForwardAgentUC           *forwardUsecases.CreateForwardAgentUseCase
-	getForwardAgentUC              *forwardUsecases.GetForwardAgentUseCase
-	updateForwardAgentUC           *forwardUsecases.UpdateForwardAgentUseCase
-	deleteForwardAgentUC           *forwardUsecases.DeleteForwardAgentUseCase
-	listForwardAgentsUC            *forwardUsecases.ListForwardAgentsUseCase
-	enableForwardAgentUC           *forwardUsecases.EnableForwardAgentUseCase
-	disableForwardAgentUC          *forwardUsecases.DisableForwardAgentUseCase
-	regenerateForwardAgentTokenUC  *forwardUsecases.RegenerateForwardAgentTokenUseCase
-	validateForwardAgentTokenUC    *forwardUsecases.ValidateForwardAgentTokenUseCase
-	getAgentStatusUC               *forwardUsecases.GetAgentStatusUseCase
-	getRuleOverallStatusUC         *forwardUsecases.GetRuleOverallStatusUseCase
-	getForwardAgentTokenUC         *forwardUsecases.GetForwardAgentTokenUseCase
-	generateInstallScriptUC        *forwardUsecases.GenerateInstallScriptUseCase
-	reportAgentStatusUC            *forwardUsecases.ReportAgentStatusUseCase
-	reportRuleSyncStatusUC         *forwardUsecases.ReportRuleSyncStatusUseCase
+	createForwardAgentUC          *forwardUsecases.CreateForwardAgentUseCase
+	getForwardAgentUC             *forwardUsecases.GetForwardAgentUseCase
+	updateForwardAgentUC          *forwardUsecases.UpdateForwardAgentUseCase
+	deleteForwardAgentUC          *forwardUsecases.DeleteForwardAgentUseCase
+	listForwardAgentsUC           *forwardUsecases.ListForwardAgentsUseCase
+	enableForwardAgentUC          *forwardUsecases.EnableForwardAgentUseCase
+	disableForwardAgentUC         *forwardUsecases.DisableForwardAgentUseCase
+	regenerateForwardAgentTokenUC *forwardUsecases.RegenerateForwardAgentTokenUseCase
+	validateForwardAgentTokenUC   *forwardUsecases.ValidateForwardAgentTokenUseCase
+	getAgentStatusUC              *forwardUsecases.GetAgentStatusUseCase
+	getRuleOverallStatusUC        *forwardUsecases.GetRuleOverallStatusUseCase
+	getForwardAgentTokenUC        *forwardUsecases.GetForwardAgentTokenUseCase
+	generateInstallScriptUC       *forwardUsecases.GenerateInstallScriptUseCase
+	reportAgentStatusUC           *forwardUsecases.ReportAgentStatusUseCase
+	reportRuleSyncStatusUC        *forwardUsecases.ReportRuleSyncStatusUseCase
 
 	// Forward Rule
-	createForwardRuleUC    *forwardUsecases.CreateForwardRuleUseCase
-	getForwardRuleUC       *forwardUsecases.GetForwardRuleUseCase
-	updateForwardRuleUC    *forwardUsecases.UpdateForwardRuleUseCase
-	deleteForwardRuleUC    *forwardUsecases.DeleteForwardRuleUseCase
-	listForwardRulesUC     *forwardUsecases.ListForwardRulesUseCase
-	enableForwardRuleUC    *forwardUsecases.EnableForwardRuleUseCase
-	disableForwardRuleUC   *forwardUsecases.DisableForwardRuleUseCase
-	resetForwardTrafficUC  *forwardUsecases.ResetForwardRuleTrafficUseCase
-	reorderForwardRulesUC  *forwardUsecases.ReorderForwardRulesUseCase
-	batchForwardRuleUC     *forwardUsecases.BatchForwardRuleUseCase
+	createForwardRuleUC   *forwardUsecases.CreateForwardRuleUseCase
+	getForwardRuleUC      *forwardUsecases.GetForwardRuleUseCase
+	updateForwardRuleUC   *forwardUsecases.UpdateForwardRuleUseCase
+	deleteForwardRuleUC   *forwardUsecases.DeleteForwardRuleUseCase
+	listForwardRulesUC    *forwardUsecases.ListForwardRulesUseCase
+	enableForwardRuleUC   *forwardUsecases.EnableForwardRuleUseCase
+	disableForwardRuleUC  *forwardUsecases.DisableForwardRuleUseCase
+	resetForwardTrafficUC *forwardUsecases.ResetForwardRuleTrafficUseCase
+	reorderForwardRulesUC *forwardUsecases.ReorderForwardRulesUseCase
+	batchForwardRuleUC    *forwardUsecases.BatchForwardRuleUseCase
 
 	// User Forward Rule
-	createUserForwardRuleUC    *forwardUsecases.CreateUserForwardRuleUseCase
-	listUserForwardRulesUC     *forwardUsecases.ListUserForwardRulesUseCase
-	getUserForwardUsageUC      *forwardUsecases.GetUserForwardUsageUseCase
-	listUserForwardAgentsUC    *forwardUsecases.ListUserForwardAgentsUseCase
+	createUserForwardRuleUC *forwardUsecases.CreateUserForwardRuleUseCase
+	listUserForwardRulesUC  *forwardUsecases.ListUserForwardRulesUseCase
+	getUserForwardUsageUC   *forwardUsecases.GetUserForwardUsageUseCase
+	listUserForwardAgentsUC *forwardUsecases.ListUserForwardAgentsUseCase
 
 	// Subscription Forward Rule
 	createSubscriptionForwardRuleUC *forwardUsecases.CreateSubscriptionForwardRuleUseCase
@@ -151,13 +151,13 @@ type allUseCases struct {
 	manageRulesUC               *resourceUsecases.ManageResourceGroupForwardRulesUseCase
 
 	// Admin Dashboard & Traffic
-	getAdminDashboardUC            *adminUsecases.GetAdminDashboardUseCase
-	getTrafficOverviewUC           *adminUsecases.GetTrafficOverviewUseCase
-	getUserTrafficStatsUC          *adminUsecases.GetUserTrafficStatsUseCase
-	getSubscriptionTrafficStatsUC  *adminUsecases.GetSubscriptionTrafficStatsUseCase
-	getAdminNodeTrafficStatsUC     *adminUsecases.GetAdminNodeTrafficStatsUseCase
-	getTrafficRankingUC            *adminUsecases.GetTrafficRankingUseCase
-	getTrafficTrendUC              *adminUsecases.GetTrafficTrendUseCase
+	getAdminDashboardUC           *adminUsecases.GetAdminDashboardUseCase
+	getTrafficOverviewUC          *adminUsecases.GetTrafficOverviewUseCase
+	getUserTrafficStatsUC         *adminUsecases.GetUserTrafficStatsUseCase
+	getSubscriptionTrafficStatsUC *adminUsecases.GetSubscriptionTrafficStatsUseCase
+	getAdminNodeTrafficStatsUC    *adminUsecases.GetAdminNodeTrafficStatsUseCase
+	getTrafficRankingUC           *adminUsecases.GetTrafficRankingUseCase
+	getTrafficTrendUC             *adminUsecases.GetTrafficTrendUseCase
 
 	// Telegram Admin
 	muteNotificationUC *telegramAdminUsecases.MuteNotificationUseCase

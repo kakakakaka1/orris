@@ -66,16 +66,16 @@ type CallbackAnswerer interface {
 
 // ServiceAdapter wraps the telegram ServiceDDD to implement TelegramServiceForPolling
 type ServiceAdapter struct {
-	binder               TelegramBinderService
-	adminBinder          AdminBinderService
-	botServiceGetter     BotServiceGetter
-	muteService          MuteNotificationService
-	callbackAnswerer     CallbackAnswerer
-	bindFunc             func(ctx context.Context, telegramUserID int64, telegramUsername, verifyCode string) error
-	getBindingStatus     func(ctx context.Context, telegramUserID int64) (bool, error)
-	getBindingLangFunc   func(ctx context.Context, telegramUserID int64) (string, error)
-	updateLanguageFunc   func(ctx context.Context, telegramUserID int64, language string) error
-	updateAdminLangFunc  func(ctx context.Context, telegramUserID int64, language string) error
+	binder              TelegramBinderService
+	adminBinder         AdminBinderService
+	botServiceGetter    BotServiceGetter
+	muteService         MuteNotificationService
+	callbackAnswerer    CallbackAnswerer
+	bindFunc            func(ctx context.Context, telegramUserID int64, telegramUsername, verifyCode string) error
+	getBindingStatus    func(ctx context.Context, telegramUserID int64) (bool, error)
+	getBindingLangFunc  func(ctx context.Context, telegramUserID int64) (string, error)
+	updateLanguageFunc  func(ctx context.Context, telegramUserID int64, language string) error
+	updateAdminLangFunc func(ctx context.Context, telegramUserID int64, language string) error
 }
 
 // NewServiceAdapter creates a new service adapter from telegram ServiceDDD

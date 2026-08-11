@@ -274,7 +274,6 @@ func (h *UserNodeHandler) GetInstallScript(c *gin.Context) {
 	utils.SuccessResponse(c, http.StatusOK, "Install command generated successfully", result)
 }
 
-
 // CreateUserNodeRequest represents the request body for creating a user node
 // TODO: Protocol binding only allows shadowsocks/trojan. CreateUserNodeCommand already supports
 // all 7 protocols (vless, vmess, hysteria2, tuic, anytls). Need to add protocol-specific fields

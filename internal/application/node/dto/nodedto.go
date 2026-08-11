@@ -67,10 +67,10 @@ type NodeDTO struct {
 	Hysteria2Fingerprint       string `json:"hysteria2_fingerprint,omitempty" description:"Hysteria2 TLS fingerprint"`
 
 	// TUIC specific fields
-	TUICCongestionControl string     `json:"tuic_congestion_control,omitempty" example:"bbr" enums:"cubic,bbr,new_reno" description:"TUIC congestion control"`
-	TUICUDPRelayMode      string     `json:"tuic_udp_relay_mode,omitempty" example:"native" enums:"native,quic" description:"TUIC UDP relay mode"`
-	TUICAlpn              string     `json:"tuic_alpn,omitempty" description:"TUIC ALPN protocols"`
-	TUICSni               string     `json:"tuic_sni,omitempty" description:"TUIC TLS SNI"`
+	TUICCongestionControl string `json:"tuic_congestion_control,omitempty" example:"bbr" enums:"cubic,bbr,new_reno" description:"TUIC congestion control"`
+	TUICUDPRelayMode      string `json:"tuic_udp_relay_mode,omitempty" example:"native" enums:"native,quic" description:"TUIC UDP relay mode"`
+	TUICAlpn              string `json:"tuic_alpn,omitempty" description:"TUIC ALPN protocols"`
+	TUICSni               string `json:"tuic_sni,omitempty" description:"TUIC TLS SNI"`
 	TUICAllowInsecure     bool   `json:"tuic_allow_insecure,omitempty" description:"TUIC allow insecure TLS"`
 	TUICDisableSNI        bool   `json:"tuic_disable_sni,omitempty" description:"TUIC disable SNI"`
 
@@ -82,20 +82,20 @@ type NodeDTO struct {
 	AnyTLSIdleSessionTimeout       string `json:"anytls_idle_session_timeout,omitempty" description:"AnyTLS idle session timeout"`
 	AnyTLSMinIdleSession           int    `json:"anytls_min_idle_session,omitempty" description:"AnyTLS minimum idle sessions"`
 
-	IsOnline                bool `json:"is_online" example:"true" description:"Indicates if the node agent is online (reported within 5 minutes)"`
-	OnlineSubscriptionCount int  `json:"online_subscription_count" description:"Number of online subscriptions on this node"`
-	LastSeenAt            *time.Time `json:"last_seen_at,omitempty" example:"2024-01-15T14:20:00Z" description:"Last time the node agent reported status"`
-	ExpiresAt             *string    `json:"expires_at,omitempty" example:"2025-12-31T23:59:59Z" description:"Expiration time in ISO8601 format (null = never expires)"`
-	CostLabel             string     `json:"cost_label,omitempty" example:"35$/m" description:"Cost label for display (e.g., '35$/m', '35¥/y')"`
-	IsExpired             bool       `json:"is_expired" example:"false" description:"True if node has expired"`
-	AgentVersion          string     `json:"agent_version,omitempty" example:"1.2.0" description:"Agent software version, extracted from system_status for easy display"`
-	Platform              string     `json:"platform,omitempty" example:"linux" description:"OS platform (linux, darwin, windows)"`
-	Arch                  string     `json:"arch,omitempty" example:"amd64" description:"CPU architecture (amd64, arm64, arm, 386)"`
-	HasUpdate             bool       `json:"has_update" example:"true" description:"True if a newer agent version is available"`
-	GroupSIDs             []string   `json:"group_sids,omitempty" example:"[\"rg_xK9mP2vL3nQ\"]" description:"Resource group SIDs this node belongs to"`
-	Version               int        `json:"version" example:"1" description:"Version number for optimistic locking"`
-	CreatedAt             time.Time  `json:"created_at" example:"2024-01-15T10:30:00Z" description:"Timestamp when the node was created"`
-	UpdatedAt             time.Time  `json:"updated_at" example:"2024-01-15T14:20:00Z" description:"Timestamp when the node was last updated"`
+	IsOnline                bool       `json:"is_online" example:"true" description:"Indicates if the node agent is online (reported within 5 minutes)"`
+	OnlineSubscriptionCount int        `json:"online_subscription_count" description:"Number of online subscriptions on this node"`
+	LastSeenAt              *time.Time `json:"last_seen_at,omitempty" example:"2024-01-15T14:20:00Z" description:"Last time the node agent reported status"`
+	ExpiresAt               *string    `json:"expires_at,omitempty" example:"2025-12-31T23:59:59Z" description:"Expiration time in ISO8601 format (null = never expires)"`
+	CostLabel               string     `json:"cost_label,omitempty" example:"35$/m" description:"Cost label for display (e.g., '35$/m', '35¥/y')"`
+	IsExpired               bool       `json:"is_expired" example:"false" description:"True if node has expired"`
+	AgentVersion            string     `json:"agent_version,omitempty" example:"1.2.0" description:"Agent software version, extracted from system_status for easy display"`
+	Platform                string     `json:"platform,omitempty" example:"linux" description:"OS platform (linux, darwin, windows)"`
+	Arch                    string     `json:"arch,omitempty" example:"amd64" description:"CPU architecture (amd64, arm64, arm, 386)"`
+	HasUpdate               bool       `json:"has_update" example:"true" description:"True if a newer agent version is available"`
+	GroupSIDs               []string   `json:"group_sids,omitempty" example:"[\"rg_xK9mP2vL3nQ\"]" description:"Resource group SIDs this node belongs to"`
+	Version                 int        `json:"version" example:"1" description:"Version number for optimistic locking"`
+	CreatedAt               time.Time  `json:"created_at" example:"2024-01-15T10:30:00Z" description:"Timestamp when the node was created"`
+	UpdatedAt               time.Time  `json:"updated_at" example:"2024-01-15T14:20:00Z" description:"Timestamp when the node was last updated"`
 	// System status fields (from Redis)
 	SystemStatus *NodeSystemStatusDTO `json:"system_status,omitempty" description:"Real-time system metrics from monitoring"`
 	// Owner information (for user-created nodes)

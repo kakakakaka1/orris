@@ -12,30 +12,30 @@ import (
 // SubscriptionModel represents the database persistence model for subscriptions
 // This is the anti-corruption layer between domain and database
 type SubscriptionModel struct {
-	ID                 uint      `gorm:"primarykey"`
-	SID                string    `gorm:"column:sid;uniqueIndex;not null;size:50;comment:Stripe-style ID: sub_xxx"`
-	UUID               string    `gorm:"column:uuid;uniqueIndex;not null;size:36;comment:unique identifier for internal use"`
-	LinkToken          string    `gorm:"column:link_token;uniqueIndex;not null;size:64;comment:secure token for subscription link authentication (256 bits)"`
-	UserID             uint      `gorm:"not null;index:idx_user_subscription"`
-	SubjectType        string    `gorm:"not null;size:20;default:user;index:idx_subject,priority:1"`
-	SubjectID          uint      `gorm:"not null;index:idx_subject,priority:2"`
-	PlanID             uint      `gorm:"not null;index:idx_plan_subscription"`
-	Status             string    `gorm:"not null;size:20;index:idx_status"`
-	StartDate          time.Time `gorm:"not null"`
-	EndDate            time.Time `gorm:"not null;index:idx_end_date"`
-	AutoRenew          bool      `gorm:"default:false"`
-	BillingCycle       *string   `gorm:"column:billing_cycle;size:20;index:idx_subscriptions_billing_cycle;comment:billing cycle (weekly, monthly, quarterly, etc.)"`
-	CurrentPeriodStart time.Time `gorm:"not null"`
-	CurrentPeriodEnd   time.Time `gorm:"not null"`
+	ID                    uint      `gorm:"primarykey"`
+	SID                   string    `gorm:"column:sid;uniqueIndex;not null;size:50;comment:Stripe-style ID: sub_xxx"`
+	UUID                  string    `gorm:"column:uuid;uniqueIndex;not null;size:36;comment:unique identifier for internal use"`
+	LinkToken             string    `gorm:"column:link_token;uniqueIndex;not null;size:64;comment:secure token for subscription link authentication (256 bits)"`
+	UserID                uint      `gorm:"not null;index:idx_user_subscription"`
+	SubjectType           string    `gorm:"not null;size:20;default:user;index:idx_subject,priority:1"`
+	SubjectID             uint      `gorm:"not null;index:idx_subject,priority:2"`
+	PlanID                uint      `gorm:"not null;index:idx_plan_subscription"`
+	Status                string    `gorm:"not null;size:20;index:idx_status"`
+	StartDate             time.Time `gorm:"not null"`
+	EndDate               time.Time `gorm:"not null;index:idx_end_date"`
+	AutoRenew             bool      `gorm:"default:false"`
+	BillingCycle          *string   `gorm:"column:billing_cycle;size:20;index:idx_subscriptions_billing_cycle;comment:billing cycle (weekly, monthly, quarterly, etc.)"`
+	CurrentPeriodStart    time.Time `gorm:"not null"`
+	CurrentPeriodEnd      time.Time `gorm:"not null"`
 	CancelledAt           *time.Time
 	CancelReason          *string `gorm:"size:500"`
 	TrafficLimitOverride  *uint64 `gorm:"column:traffic_limit_override;comment:override plan traffic limit (nil=use plan default)"`
 	TrafficUsedAdjustment int64   `gorm:"column:traffic_used_adjustment;not null;default:0;comment:adjustment to actual traffic usage"`
 	Metadata              datatypes.JSON
-	Version            int `gorm:"not null;default:1"`
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
-	DeletedAt          gorm.DeletedAt `gorm:"index"`
+	Version               int `gorm:"not null;default:1"`
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
+	DeletedAt             gorm.DeletedAt `gorm:"index"`
 }
 
 // TableName specifies the table name for GORM

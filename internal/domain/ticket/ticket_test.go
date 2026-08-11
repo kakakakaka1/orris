@@ -33,14 +33,14 @@ func reconstructedTicket(t *testing.T, status vo.TicketStatus) *Ticket {
 		"Persisted ticket", "desc",
 		vo.CategoryBilling, vo.PriorityHigh,
 		status,
-		10,   // creatorID
-		nil,  // assigneeID
-		nil,  // tags
-		nil,  // metadata
-		nil,  // slaDueTime
-		nil,  // responseTime
-		nil,  // resolvedTime
-		1,    // version
+		10,  // creatorID
+		nil, // assigneeID
+		nil, // tags
+		nil, // metadata
+		nil, // slaDueTime
+		nil, // responseTime
+		nil, // resolvedTime
+		1,   // version
 		now, now,
 		nil, // closedAt
 	)
@@ -54,30 +54,30 @@ func reconstructedTicket(t *testing.T, status vo.TicketStatus) *Ticket {
 
 func TestNewTicket_ValidInput(t *testing.T) {
 	tests := []struct {
-		name     string
-		title    string
-		desc     string
-		cat      vo.Category
-		pri      vo.Priority
-		creator  uint
+		name    string
+		title   string
+		desc    string
+		cat     vo.Category
+		pri     vo.Priority
+		creator uint
 	}{
 		{
-			name: "all valid fields - technical/low",
+			name:  "all valid fields - technical/low",
 			title: "Login page broken", desc: "Cannot log in after update",
 			cat: vo.CategoryTechnical, pri: vo.PriorityLow, creator: 1,
 		},
 		{
-			name: "all valid fields - billing/urgent",
+			name:  "all valid fields - billing/urgent",
 			title: "Overcharged", desc: "Billed twice this month",
 			cat: vo.CategoryBilling, pri: vo.PriorityUrgent, creator: 42,
 		},
 		{
-			name: "boundary title length 200",
+			name:  "boundary title length 200",
 			title: strings.Repeat("a", 200), desc: "desc",
 			cat: vo.CategoryOther, pri: vo.PriorityMedium, creator: 5,
 		},
 		{
-			name: "boundary description length 5000",
+			name:  "boundary description length 5000",
 			title: "Title", desc: strings.Repeat("d", 5000),
 			cat: vo.CategoryFeature, pri: vo.PriorityHigh, creator: 7,
 		},
@@ -806,8 +806,8 @@ func TestTicket_IsOverdue_NilSLADueTime(t *testing.T) {
 
 func TestTicket_SLADeadline_ByPriority(t *testing.T) {
 	tests := []struct {
-		priority    vo.Priority
-		expectedH   int
+		priority  vo.Priority
+		expectedH int
 	}{
 		{vo.PriorityLow, 72},
 		{vo.PriorityMedium, 24},

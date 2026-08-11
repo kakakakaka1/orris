@@ -32,7 +32,7 @@ type BotService struct {
 	httpClient     *http.Client
 	longPollClient *http.Client // Reusable client for long polling with extended timeout
 	baseURL        string
-	botUsername     string // Cached bot username from getMe
+	botUsername    string // Cached bot username from getMe
 	cb             *gobreaker.CircuitBreaker[struct{}]
 }
 
@@ -439,9 +439,9 @@ func NewInlineKeyboardButtonURL(text, url string) InlineKeyboardButton {
 
 // apiResponse represents a Telegram API response
 type apiResponse struct {
-	OK          bool   `json:"ok"`
-	ErrorCode   int    `json:"error_code,omitempty"`
-	Description string `json:"description,omitempty"`
+	OK          bool                `json:"ok"`
+	ErrorCode   int                 `json:"error_code,omitempty"`
+	Description string              `json:"description,omitempty"`
 	Parameters  *responseParameters `json:"parameters,omitempty"`
 }
 

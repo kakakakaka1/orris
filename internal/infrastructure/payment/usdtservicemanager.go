@@ -55,13 +55,13 @@ type USDTServiceManager struct {
 	confirmUseCase   *paymentUsecases.ConfirmUSDTPaymentUseCase
 
 	// Internal scheduler state
-	stopChan         chan struct{}
-	stopOnce         sync.Once
-	wg               sync.WaitGroup
-	running          bool
-	cleanupInterval  time.Duration
-	lastCleanup      time.Time
-	cleanupRunning   bool
+	stopChan        chan struct{}
+	stopOnce        sync.Once
+	wg              sync.WaitGroup
+	running         bool
+	cleanupInterval time.Duration
+	lastCleanup     time.Time
+	cleanupRunning  bool
 }
 
 // NewUSDTServiceManager creates a new USDT service manager

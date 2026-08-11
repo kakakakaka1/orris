@@ -146,11 +146,11 @@ type ConfigAckData struct {
 // TunnelHealthReport represents a tunnel health status report from entry agent.
 // Entry agents periodically check tunnel connectivity to exit agents and report failures.
 type TunnelHealthReport struct {
-	RuleID      string `json:"rule_id"`                // Rule ID (Stripe-style prefixed, e.g., "fr_xxx")
-	ExitAgentID string `json:"exit_agent_id"`          // Exit agent ID (Stripe-style prefixed, e.g., "fa_xxx")
-	Healthy     bool   `json:"healthy"`                // Whether the tunnel is healthy
-	FailCount   int    `json:"fail_count,omitempty"`   // Consecutive failure count (when unhealthy)
-	Error       string `json:"error,omitempty"`        // Error message (when unhealthy)
-	LatencyMs   *int64 `json:"latency_ms,omitempty"`   // Last measured latency in milliseconds (when healthy)
-	CheckedAt   int64  `json:"checked_at"`             // Health check timestamp (Unix seconds)
+	RuleID      string `json:"rule_id"`              // Rule ID (Stripe-style prefixed, e.g., "fr_xxx")
+	ExitAgentID string `json:"exit_agent_id"`        // Exit agent ID (Stripe-style prefixed, e.g., "fa_xxx")
+	Healthy     bool   `json:"healthy"`              // Whether the tunnel is healthy
+	FailCount   int    `json:"fail_count,omitempty"` // Consecutive failure count (when unhealthy)
+	Error       string `json:"error,omitempty"`      // Error message (when unhealthy)
+	LatencyMs   *int64 `json:"latency_ms,omitempty"` // Last measured latency in milliseconds (when healthy)
+	CheckedAt   int64  `json:"checked_at"`           // Health check timestamp (Unix seconds)
 }

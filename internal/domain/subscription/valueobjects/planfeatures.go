@@ -221,10 +221,10 @@ const (
 
 // validLimitKeys contains all valid limit keys
 var validLimitKeys = map[string]bool{
-	LimitKeyTraffic:         true,
-	LimitKeyDeviceCount:     true,
-	LimitKeySpeedLimit:      true,
-	LimitKeyConnectionLimit: true,
+	LimitKeyTraffic:          true,
+	LimitKeyDeviceCount:      true,
+	LimitKeySpeedLimit:       true,
+	LimitKeyConnectionLimit:  true,
 	LimitKeyRuleCount:        true,
 	LimitKeyRuleTypes:        true,
 	LimitKeyTrafficResetMode: true,

@@ -42,8 +42,8 @@ type ForwardRule struct {
 	trafficMultiplier   *float64 // traffic multiplier for display. nil means auto-calculate based on node count
 	sortOrder           int
 	groupIDs            []uint               // resource group IDs for access control
-	routeConfig         *routing.RouteConfig  // per-rule routing configuration (sing-box route rules)
-	addressPreference   vo.AddressPreference  // which address to use for next hop: auto, public, tunnel
+	routeConfig         *routing.RouteConfig // per-rule routing configuration (sing-box route rules)
+	addressPreference   vo.AddressPreference // which address to use for next hop: auto, public, tunnel
 	// External rule fields (used when ruleType = external)
 	serverAddress  string // server address for external rules (replaces agent's public address)
 	externalSource string // external source identifier (required for external rules)
@@ -204,19 +204,19 @@ func NewExternalForwardRule(
 
 	now := biztime.NowUTC()
 	return &ForwardRule{
-		sid:            sid,
-		agentID:        0, // External rules don't have agents
-		userID:         userID,
-		subscriptionID: subscriptionID,
-		ruleType:       vo.ForwardRuleTypeExternal,
-		name:           name,
-		listenPort:     listenPort,
-		targetNodeID:   targetNodeID,
-		protocol:       vo.ForwardProtocolTCP, // Default, will be determined from targetNodeID
-		status:         vo.ForwardStatusEnabled,
-		remark:         remark,
-		sortOrder:      sortOrder,
-		groupIDs:       groupIDs,
+		sid:               sid,
+		agentID:           0, // External rules don't have agents
+		userID:            userID,
+		subscriptionID:    subscriptionID,
+		ruleType:          vo.ForwardRuleTypeExternal,
+		name:              name,
+		listenPort:        listenPort,
+		targetNodeID:      targetNodeID,
+		protocol:          vo.ForwardProtocolTCP, // Default, will be determined from targetNodeID
+		status:            vo.ForwardStatusEnabled,
+		remark:            remark,
+		sortOrder:         sortOrder,
+		groupIDs:          groupIDs,
 		addressPreference: vo.AddressPreferenceAuto,
 		serverAddress:     serverAddress,
 		externalSource:    externalSource,

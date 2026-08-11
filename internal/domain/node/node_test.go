@@ -34,8 +34,8 @@ func newShadowsocksNode(t *testing.T) *Node {
 	n, err := NewNode(
 		"test-ss-node",
 		addr,
-		8388,  // agentPort
-		nil,   // subscriptionPort
+		8388, // agentPort
+		nil,  // subscriptionPort
 		vo.ProtocolShadowsocks,
 		enc,
 		nil, // pluginConfig
@@ -109,12 +109,12 @@ func reconstructedNode(t *testing.T, status vo.NodeStatus) *Node {
 	}
 
 	n, err := ReconstructNode(
-		1,                // id
-		"node_recon001",  // sid
-		"recon-node",     // name
-		addr,             // serverAddress
-		8388,             // agentPort
-		nil,              // subscriptionPort
+		1,               // id
+		"node_recon001", // sid
+		"recon-node",    // name
+		addr,            // serverAddress
+		8388,            // agentPort
+		nil,             // subscriptionPort
 		vo.ProtocolShadowsocks,
 		enc,
 		nil,    // pluginConfig
@@ -126,8 +126,8 @@ func reconstructedNode(t *testing.T, status vo.NodeStatus) *Node {
 		nil,    // anytlsConfig
 		status, // status
 		meta,
-		[]uint{1, 2},    // groupIDs
-		nil,              // userID
+		[]uint{1, 2}, // groupIDs
+		nil,          // userID
 		"abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234", // tokenHash (64 hex chars)
 		"",     // apiToken (cleared)
 		0,      // sortOrder
@@ -284,15 +284,15 @@ func TestNewNode_ValidInput_VMess(t *testing.T) {
 	require.NoError(t, err)
 
 	vmessCfg, err := vo.NewVMessConfig(
-		0,          // alterID
-		"auto",     // security
-		"ws",       // transportType
-		"cdn.com",  // host
-		"/vmess",   // path
-		"",         // serviceName
-		true,       // tls
-		"cdn.com",  // sni
-		false,      // allowInsecure
+		0,         // alterID
+		"auto",    // security
+		"ws",      // transportType
+		"cdn.com", // host
+		"/vmess",  // path
+		"",        // serviceName
+		true,      // tls
+		"cdn.com", // sni
+		false,     // allowInsecure
 	)
 	require.NoError(t, err)
 
@@ -324,15 +324,15 @@ func TestNewNode_ValidInput_Hysteria2(t *testing.T) {
 	require.NoError(t, err)
 
 	hy2Cfg, err := vo.NewHysteria2Config(
-		"securepass123",  // password
-		"bbr",            // congestionControl
-		"",               // obfs
-		"",               // obfsPassword
-		nil,              // upMbps
-		nil,              // downMbps
+		"securepass123",   // password
+		"bbr",             // congestionControl
+		"",                // obfs
+		"",                // obfsPassword
+		nil,               // upMbps
+		nil,               // downMbps
 		"hy2.example.com", // sni
-		false,            // allowInsecure
-		"chrome",         // fingerprint
+		false,             // allowInsecure
+		"chrome",          // fingerprint
 	)
 	require.NoError(t, err)
 
@@ -364,14 +364,14 @@ func TestNewNode_ValidInput_TUIC(t *testing.T) {
 	require.NoError(t, err)
 
 	tuicCfg, err := vo.NewTUICConfig(
-		"some-uuid-value",    // uuid
-		"some-password",      // password
-		"bbr",                // congestionControl
-		"native",             // udpRelayMode
-		"h3",                 // alpn
-		"tuic.example.com",   // sni
-		false,                // allowInsecure
-		false,                // disableSNI
+		"some-uuid-value",  // uuid
+		"some-password",    // password
+		"bbr",              // congestionControl
+		"native",           // udpRelayMode
+		"h3",               // alpn
+		"tuic.example.com", // sni
+		false,              // allowInsecure
+		false,              // disableSNI
 	)
 	require.NoError(t, err)
 
@@ -627,13 +627,13 @@ func TestNewNode_ValidInput_AnyTLS(t *testing.T) {
 		nil,
 		vo.ProtocolAnyTLS,
 		vo.EncryptionConfig{},
-		nil,          // pluginConfig
-		nil,          // trojanConfig
-		nil,          // vlessConfig
-		nil,          // vmessConfig
-		nil,          // hysteria2Config
-		nil,          // tuicConfig
-		&anytlsCfg,   // anytlsConfig
+		nil,        // pluginConfig
+		nil,        // trojanConfig
+		nil,        // vlessConfig
+		nil,        // vmessConfig
+		nil,        // hysteria2Config
+		nil,        // tuicConfig
+		&anytlsCfg, // anytlsConfig
 		meta,
 		0,
 		nil, // routeConfig

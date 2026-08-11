@@ -304,7 +304,7 @@ func TestAddAndAddAllCombined(t *testing.T) {
 
 	s.Add(1)
 	s.AddAll([]uint{2, 3})
-	s.Add(3) // duplicate
+	s.Add(3)               // duplicate
 	s.AddAll([]uint{4, 1}) // 1 is duplicate
 	s.Add(5)
 

@@ -87,15 +87,15 @@ func NewMockLogger() logger.Interface {
 
 type mockLogger struct{}
 
-func (m *mockLogger) Debug(msg string, args ...any)                    {}
-func (m *mockLogger) Info(msg string, args ...any)                     {}
-func (m *mockLogger) Warn(msg string, args ...any)                     {}
-func (m *mockLogger) Error(msg string, args ...any)                    {}
-func (m *mockLogger) Fatal(msg string, args ...any)                    {}
-func (m *mockLogger) With(args ...any) logger.Interface                { return m }
-func (m *mockLogger) Named(name string) logger.Interface               { return m }
-func (m *mockLogger) Debugw(msg string, keysAndValues ...interface{})  {}
-func (m *mockLogger) Infow(msg string, keysAndValues ...interface{})   {}
-func (m *mockLogger) Warnw(msg string, keysAndValues ...interface{})   {}
-func (m *mockLogger) Errorw(msg string, keysAndValues ...interface{})  {}
-func (m *mockLogger) Fatalw(msg string, keysAndValues ...interface{})  {}
+func (m *mockLogger) Debug(msg string, args ...any)                   {}
+func (m *mockLogger) Info(msg string, args ...any)                    {}
+func (m *mockLogger) Warn(msg string, args ...any)                    {}
+func (m *mockLogger) Error(msg string, args ...any)                   {}
+func (m *mockLogger) Fatal(msg string, args ...any)                   {}
+func (m *mockLogger) With(args ...any) logger.Interface               { return m }
+func (m *mockLogger) Named(name string) logger.Interface              { return m }
+func (m *mockLogger) Debugw(msg string, keysAndValues ...interface{}) {}
+func (m *mockLogger) Infow(msg string, keysAndValues ...interface{})  {}
+func (m *mockLogger) Warnw(msg string, keysAndValues ...interface{})  {}
+func (m *mockLogger) Errorw(msg string, keysAndValues ...interface{}) {}
+func (m *mockLogger) Fatalw(msg string, keysAndValues ...interface{}) {}

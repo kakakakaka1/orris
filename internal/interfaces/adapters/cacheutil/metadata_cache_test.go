@@ -13,8 +13,8 @@ type testMetadata struct {
 	Name string
 }
 
-func getTestID(t *testMetadata) uint     { return t.ID }
-func getTestSID(t *testMetadata) string  { return t.SID }
+func getTestID(t *testMetadata) uint    { return t.ID }
+func getTestSID(t *testMetadata) string { return t.SID }
 
 func TestNewMetadataCache(t *testing.T) {
 	ttl := 5 * time.Minute
@@ -162,10 +162,10 @@ func TestGetBySIDs_SpecificSIDs(t *testing.T) {
 	cache.FinishRefresh(items, getTestID, getTestSID)
 
 	tests := []struct {
-		name        string
-		sids        []string
-		wantIDs     []uint
-		wantCount   int
+		name      string
+		sids      []string
+		wantIDs   []uint
+		wantCount int
 	}{
 		{
 			name:      "single existing SID",

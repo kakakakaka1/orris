@@ -111,4 +111,3 @@ type WeeklySummaryData struct {
 	PrevTotalTrafficBytes uint64
 	TrafficChangePercent  float64
 }
-

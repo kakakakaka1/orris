@@ -109,7 +109,6 @@ type ForwardRuleOrder struct {
 	SortOrder int    `json:"sort_order" binding:"gte=0" example:"100"`
 }
 
-
 // CreateRule handles POST /subscriptions/:sid/forward-rules
 func (h *Handler) CreateRule(c *gin.Context) {
 	userID, err := utils.GetUserIDFromContext(c)
