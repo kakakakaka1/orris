@@ -89,6 +89,7 @@ type allUseCases struct {
 	reportOnlineSubscriptionsUC  *nodeUsecases.ReportOnlineSubscriptionsUseCase
 	listSubscriptionOrderUC      *nodeUsecases.ListSubscriptionOrderUseCase
 	reorderSubscriptionOrderUC   *nodeUsecases.ReorderSubscriptionOrderUseCase
+	previewSubNodeOrderUC        *nodeUsecases.PreviewSubscriptionNodeOrderUseCase
 
 	// User Node
 	createUserNodeUC            *nodeUsecases.CreateUserNodeUseCase

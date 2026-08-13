@@ -500,7 +500,27 @@ type Node struct {
 	AnyTLSConfig    *valueobjects.AnyTLSConfig
 	// Sorting field for subscription output ordering
 	SortOrder int
+	// Entry identity: which record produced this subscription entry. Filled by the
+	// repository, ignored by the formatters. A single node appears once as an origin
+	// entry and again behind every forward rule that targets it, so the node alone
+	// does not identify an entry.
+	EntryType SubscriptionOrderItemType // origin or forward
+	// EntrySID is the node SID for origin entries, the forward rule SID for forward ones.
+	EntrySID string
+	// EntryScope is "system" or "user" for forward entries, empty for origin entries.
+	EntryScope string
+	// NodeSID is the node carrying the traffic; equals EntrySID for origin entries.
+	NodeSID string
 }
+
+// Forward entry ownership, as reported in Node.EntryScope.
+const (
+	// SubscriptionEntryScopeSystem marks a forward rule created by an admin and
+	// delivered through a resource group.
+	SubscriptionEntryScopeSystem = "system"
+	// SubscriptionEntryScopeUser marks a forward rule owned by the subscriber.
+	SubscriptionEntryScopeUser = "user"
+)
 
 // ToTrojanURI generates a Trojan URI string for subscription
 // Delegates to domain layer TrojanConfig.ToURI for consistent URI generation

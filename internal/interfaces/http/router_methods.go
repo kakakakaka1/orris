@@ -60,6 +60,7 @@ func (r *Router) SetupRoutes(cfg *config.Config) {
 	routes.SetupAdminRoutes(r.engine, &routes.AdminRouteConfig{
 		AdminDashboardHandler:     r.adminDashboardHandler,
 		AdminSubscriptionHandler:  r.adminSubscriptionHandler,
+		SubscriptionNodeOrder:     r.subscriptionNodeOrderHandler,
 		AdminResourceGroupHandler: r.adminResourceGroupHandler,
 		AdminTrafficStatsHandler:  r.adminTrafficStatsHandler,
 		AdminTelegramHandler:      r.adminTelegramHandler,

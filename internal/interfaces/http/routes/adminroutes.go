@@ -14,6 +14,7 @@ import (
 type AdminRouteConfig struct {
 	AdminDashboardHandler     *adminHandlers.AdminDashboardHandler
 	AdminSubscriptionHandler  *adminSubscriptionHandlers.Handler
+	SubscriptionNodeOrder     *adminSubscriptionHandlers.NodeOrderHandler
 	AdminResourceGroupHandler *adminResourceGroupHandlers.Handler
 	AdminTrafficStatsHandler  *adminHandlers.TrafficStatsHandler
 	AdminTelegramHandler      *adminHandlers.AdminTelegramHandler // may be nil
@@ -44,6 +45,12 @@ func SetupAdminRoutes(engine *gin.Engine, cfg *AdminRouteConfig) {
 		adminSubscriptions.POST("/:id/renew", cfg.AdminSubscriptionHandler.Renew)
 		adminSubscriptions.PATCH("/:id", cfg.AdminSubscriptionHandler.Update)
 		adminSubscriptions.DELETE("/:id", cfg.AdminSubscriptionHandler.Delete)
+
+		// What this subscription actually delivers, in subscription link order: every
+		// resource group of its plan plus the subscriber's own forward rules.
+		if cfg.SubscriptionNodeOrder != nil {
+			adminSubscriptions.GET("/:id/node-order", cfg.SubscriptionNodeOrder.GetNodeOrder)
+		}
 	}
 
 	// Admin resource group routes

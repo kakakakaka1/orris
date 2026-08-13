@@ -28,9 +28,10 @@ type allHandlers struct {
 	dashboardHandler *handlers.DashboardHandler
 
 	// Subscription
-	subscriptionHandler      *handlers.SubscriptionHandler
-	adminSubscriptionHandler *adminSubscriptionHandlers.Handler
-	subscriptionTokenHandler *handlers.SubscriptionTokenHandler
+	subscriptionHandler          *handlers.SubscriptionHandler
+	adminSubscriptionHandler     *adminSubscriptionHandlers.Handler
+	subscriptionNodeOrderHandler *adminSubscriptionHandlers.NodeOrderHandler
+	subscriptionTokenHandler     *handlers.SubscriptionTokenHandler
 
 	// Plan
 	planHandler *handlers.PlanHandler

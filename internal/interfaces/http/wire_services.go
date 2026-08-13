@@ -353,6 +353,15 @@ func (c *Container) initNode() {
 		ucs.listSubscriptionOrderUC, ucs.reorderSubscriptionOrderUC, log,
 	)
 
+	// Admin preview of one subscription's delivered order. It reads the subscription
+	// delivery path itself, so the preview cannot drift from what clients receive.
+	ucs.previewSubNodeOrderUC = nodeUsecases.NewPreviewSubscriptionNodeOrderUseCase(
+		repos.subscriptionRepo, c.nodeRepoAdapter, log,
+	)
+	hdlrs.subscriptionNodeOrderHandler = adminSubscriptionHandlers.NewNodeOrderHandler(
+		ucs.previewSubNodeOrderUC, log,
+	)
+
 	// Initialize user node use cases
 	ucs.createUserNodeUC = nodeUsecases.NewCreateUserNodeUseCase(repos.nodeRepoImpl, log)
 	ucs.listUserNodesUC = nodeUsecases.NewListUserNodesUseCase(repos.nodeRepoImpl, log)

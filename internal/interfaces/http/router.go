@@ -50,6 +50,7 @@ type Router struct {
 	dashboardHandler               *handlers.DashboardHandler
 	subscriptionHandler            *handlers.SubscriptionHandler
 	adminSubscriptionHandler       *adminSubscriptionHandlers.Handler
+	subscriptionNodeOrderHandler   *adminSubscriptionHandlers.NodeOrderHandler
 	adminResourceGroupHandler      *adminResourceGroupHandlers.Handler
 	adminDashboardHandler          *adminHandlers.AdminDashboardHandler
 	adminTrafficStatsHandler       *adminHandlers.TrafficStatsHandler
@@ -123,6 +124,7 @@ func NewRouter(userService *user.ServiceDDD, db *gorm.DB, redisClient *redis.Cli
 		dashboardHandler:               c.hdlrs.dashboardHandler,
 		subscriptionHandler:            c.hdlrs.subscriptionHandler,
 		adminSubscriptionHandler:       c.hdlrs.adminSubscriptionHandler,
+		subscriptionNodeOrderHandler:   c.hdlrs.subscriptionNodeOrderHandler,
 		adminResourceGroupHandler:      c.hdlrs.adminResourceGroupHandler,
 		adminDashboardHandler:          c.hdlrs.adminDashboardHandler,
 		adminTrafficStatsHandler:       c.hdlrs.adminTrafficStatsHandler,

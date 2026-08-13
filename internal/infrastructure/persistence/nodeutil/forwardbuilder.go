@@ -36,6 +36,15 @@ func (b *ForwardedNodeBuilder) ResolveRuleServerAddress(rule *forward.ForwardRul
 	return agent.PublicAddress
 }
 
+// MarkForwardEntry records that the entry is delivered through a forward rule rather than
+// directly, so callers can tell which rule produced it and who owns that rule. The node the
+// traffic lands on stays in NodeSID.
+func MarkForwardEntry(node *usecases.Node, rule *forward.ForwardRule) {
+	node.EntryType = usecases.SubscriptionOrderItemForward
+	node.EntrySID = rule.SID()
+	node.EntryScope = rule.Scope().String()
+}
+
 // BuildFromNodeModel builds a forwarded node from a forward rule and target NodeModel.
 func (b *ForwardedNodeBuilder) BuildFromNodeModel(rule *forward.ForwardRule, targetNode *models.NodeModel) *usecases.Node {
 	if rule.TargetNodeID() == nil || targetNode == nil {
@@ -49,6 +58,7 @@ func (b *ForwardedNodeBuilder) BuildFromNodeModel(rule *forward.ForwardRule, tar
 
 	source := NodeSource{
 		ID:        targetNode.ID,
+		SID:       targetNode.SID,
 		Name:      rule.Name(),
 		Address:   serverAddress,
 		Port:      rule.ListenPort(),
@@ -57,7 +67,10 @@ func (b *ForwardedNodeBuilder) BuildFromNodeModel(rule *forward.ForwardRule, tar
 		SortOrder: rule.SortOrder(),
 	}
 
-	return BuildNode(source, b.configs)
+	node := BuildNode(source, b.configs)
+	MarkForwardEntry(node, rule)
+
+	return node
 }
 
 // BuildFromUsecaseNode builds a forwarded node from a forward rule and target usecases.Node.
@@ -81,7 +94,9 @@ func (b *ForwardedNodeBuilder) BuildFromUsecaseNode(rule *forward.ForwardRule, o
 		TokenHash:        originalNode.TokenHash,
 		Password:         originalNode.Password,
 		SortOrder:        rule.SortOrder(),
+		NodeSID:          originalNode.NodeSID,
 	}
+	MarkForwardEntry(forwardedNode, rule)
 
 	// Copy protocol-specific fields from the original node
 	CopyProtocolFieldsFromNode(forwardedNode, originalNode)

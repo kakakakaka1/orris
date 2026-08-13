@@ -12,7 +12,10 @@ import (
 // NodeSource contains the essential data needed to build a subscription node.
 // This abstraction allows building nodes from both NodeModel and ForwardRule sources.
 type NodeSource struct {
-	ID        uint
+	ID uint
+	// SID is the node's Stripe-style ID. It identifies the node an entry is built from,
+	// including for forwarded entries whose own identity is the forward rule.
+	SID       string
 	Name      string
 	Address   string
 	Port      uint16
@@ -46,6 +49,9 @@ func NewProtocolConfigs() ProtocolConfigs {
 }
 
 // BuildNode creates a usecases.Node from a NodeSource and applies protocol configuration.
+//
+// The result is marked as an origin entry. Callers building an entry from a forward rule
+// overwrite that identity with MarkForwardEntry.
 func BuildNode(source NodeSource, configs ProtocolConfigs) *usecases.Node {
 	protocol := normalizeProtocol(source.Protocol)
 
@@ -58,6 +64,9 @@ func BuildNode(source NodeSource, configs ProtocolConfigs) *usecases.Node {
 		TokenHash:        source.TokenHash,
 		Password:         "",
 		SortOrder:        source.SortOrder,
+		EntryType:        usecases.SubscriptionOrderItemOrigin,
+		EntrySID:         source.SID,
+		NodeSID:          source.SID,
 	}
 
 	ApplyProtocolConfig(node, protocol, source.ID, configs)
@@ -245,6 +254,7 @@ func NodeModelToSource(nm *models.NodeModel) NodeSource {
 
 	return NodeSource{
 		ID:        nm.ID,
+		SID:       nm.SID,
 		Name:      nm.Name,
 		Address:   ResolveServerAddress(nm.ServerAddress, nm.PublicIPv4, nm.PublicIPv6),
 		Port:      port,
