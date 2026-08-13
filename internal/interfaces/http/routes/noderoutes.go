@@ -11,17 +11,18 @@ import (
 
 // NodeRouteConfig holds dependencies for node routes
 type NodeRouteConfig struct {
-	NodeHandler         *handlers.NodeHandler
-	NodeHubHandler      *nodeHandlers.NodeHubHandler
-	NodeVersionHandler  *nodeHandlers.NodeVersionHandler
-	NodeSSEHandler      *nodeHandlers.NodeSSEHandler
-	UserNodeHandler     *nodeHandlers.UserNodeHandler
-	SubscriptionHandler *handlers.NodeSubscriptionHandler
-	AuthMiddleware      *middleware.AuthMiddleware
-	NodeTokenMW         *middleware.NodeTokenMiddleware
-	NodeOwnerMW         *middleware.NodeOwnerMiddleware
-	NodeQuotaMW         *middleware.NodeQuotaMiddleware
-	RateLimiter         *middleware.RateLimiter
+	NodeHandler              *handlers.NodeHandler
+	NodeHubHandler           *nodeHandlers.NodeHubHandler
+	NodeVersionHandler       *nodeHandlers.NodeVersionHandler
+	NodeSSEHandler           *nodeHandlers.NodeSSEHandler
+	UserNodeHandler          *nodeHandlers.UserNodeHandler
+	SubscriptionHandler      *handlers.NodeSubscriptionHandler
+	SubscriptionOrderHandler *nodeHandlers.SubscriptionOrderHandler
+	AuthMiddleware           *middleware.AuthMiddleware
+	NodeTokenMW              *middleware.NodeTokenMiddleware
+	NodeOwnerMW              *middleware.NodeOwnerMiddleware
+	NodeQuotaMW              *middleware.NodeQuotaMiddleware
+	RateLimiter              *middleware.RateLimiter
 }
 
 // SetupNodeRoutes configures all node management routes
@@ -45,6 +46,17 @@ func SetupNodeRoutes(engine *gin.Engine, config *NodeRouteConfig) {
 		nodes.POST("/batch-install-script",
 			authorization.RequireAdmin(),
 			config.NodeHandler.GetBatchInstallScript)
+
+		// Merged subscription ordering of a resource group: origin nodes interleaved
+		// with the system forward rules bound to it (must come BEFORE /:id)
+		if config.SubscriptionOrderHandler != nil {
+			nodes.GET("/subscription-order",
+				authorization.RequireAdmin(),
+				config.SubscriptionOrderHandler.GetOrder)
+			nodes.PATCH("/subscription-order",
+				authorization.RequireAdmin(),
+				config.SubscriptionOrderHandler.UpdateOrder)
+		}
 
 		// Specific action endpoints (must come BEFORE /:id to avoid conflicts)
 		// Using PATCH for state changes as per RESTful best practices

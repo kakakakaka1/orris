@@ -292,6 +292,13 @@ func (uc *CreateSubscriptionForwardRuleUseCase) createRuleWithRetry(
 	userIDPtr := &cmd.UserID
 	subscriptionIDPtr := &cmd.SubscriptionID
 
+	// Resolved once: a port-conflict retry re-assigns the port, not the position.
+	sortOrder, err := resolveNewRuleSortOrder(ctx, uc.repo, cmd.SortOrder)
+	if err != nil {
+		uc.logger.Errorw("failed to resolve sort order for new rule", "subscription_id", cmd.SubscriptionID, "error", err)
+		return nil, err
+	}
+
 	var lastErr error
 	maxRetries := 1
 	if retryCtx.isAutoAssignPort {
@@ -343,7 +350,7 @@ func (uc *CreateSubscriptionForwardRuleUseCase) createRuleWithRetry(
 			protocol,
 			cmd.Remark,
 			cmd.TrafficMultiplier,
-			derefIntOrDefault(cmd.SortOrder, 0),
+			sortOrder,
 			vo.AddressPreference(cmd.AddressPreference),
 			id.NewForwardRuleID,
 		)

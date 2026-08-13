@@ -12,6 +12,7 @@ import (
 	"github.com/orris-inc/orris/internal/domain/node"
 	"github.com/orris-inc/orris/internal/infrastructure/persistence/models"
 	"github.com/orris-inc/orris/internal/shared/biztime"
+	"github.com/orris-inc/orris/internal/shared/db"
 	"github.com/orris-inc/orris/internal/shared/errors"
 )
 
@@ -492,6 +493,48 @@ func (r *NodeRepositoryImpl) BatchUpdateGroupIDs(ctx context.Context, nodeGroupI
 
 	r.logger.Infow("batch updated group IDs", "updated_count", updated, "total_count", len(nodeGroupIDs))
 	return updated, nil
+}
+
+// UpdateSortOrders batch updates sort_order for multiple nodes using a single CASE WHEN SQL.
+// Honours an ambient transaction so callers can update node and forward rule orders atomically.
+func (r *NodeRepositoryImpl) UpdateSortOrders(ctx context.Context, nodeOrders map[uint]int) error {
+	if len(nodeOrders) == 0 {
+		return nil
+	}
+
+	// Build CASE WHEN SQL: UPDATE nodes SET sort_order = CASE id WHEN ? THEN ? ... END WHERE id IN (?,...)
+	var sb strings.Builder
+	sb.WriteString("UPDATE nodes SET sort_order = CASE id ")
+
+	args := make([]interface{}, 0, len(nodeOrders)*2+1+len(nodeOrders))
+	ids := make([]interface{}, 0, len(nodeOrders))
+
+	for nodeID, sortOrder := range nodeOrders {
+		sb.WriteString("WHEN ? THEN ? ")
+		args = append(args, nodeID, sortOrder)
+		ids = append(ids, nodeID)
+	}
+
+	sb.WriteString("END, updated_at = ? WHERE id IN (")
+	args = append(args, biztime.NowUTC())
+
+	for i := range ids {
+		if i > 0 {
+			sb.WriteString(",")
+		}
+		sb.WriteString("?")
+	}
+	sb.WriteString(")")
+	args = append(args, ids...)
+
+	tx := db.GetTxFromContext(ctx, r.db)
+	if err := tx.Exec(sb.String(), args...).Error; err != nil {
+		r.logger.Errorw("failed to batch update node sort orders", "error", err, "count", len(nodeOrders))
+		return fmt.Errorf("failed to batch update node sort orders: %w", err)
+	}
+
+	r.logger.Infow("node sort orders updated successfully", "count", len(nodeOrders))
+	return nil
 }
 
 // CountByLastSeenAfter counts nodes whose last_seen_at is after the given threshold.

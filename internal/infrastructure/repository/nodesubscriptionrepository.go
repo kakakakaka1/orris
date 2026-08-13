@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"sort"
 
 	"gorm.io/gorm"
 
@@ -142,8 +143,38 @@ func (r *NodeSubscriptionRepository) GetBySubscriptionToken(ctx context.Context,
 	case usecases.NodeModeOrigin:
 		return originNodes, nil
 	default: // NodeModeAll
-		return append(originNodes, forwardedNodes...), nil
+		return mergeBySortOrder(originNodes, forwardedNodes), nil
 	}
+}
+
+// mergeBySortOrder merges node groups into one subscription list ordered by SortOrder.
+//
+// Origin nodes carry nodes.sort_order and forwarded nodes carry forward_rules.sort_order.
+// Both columns share a single value space, which is what allows an origin node to be
+// positioned between forwarded ones instead of the two kinds being concatenated.
+//
+// The sort is stable, so entries sharing a sort_order keep the order of the groups passed
+// in — origin, then system-forwarded, then user-forwarded. That reproduces the historical
+// concatenation for any rows still holding the default value of 0.
+func mergeBySortOrder(groups ...[]*usecases.Node) []*usecases.Node {
+	total := 0
+	for _, group := range groups {
+		total += len(group)
+	}
+	if total == 0 {
+		return []*usecases.Node{}
+	}
+
+	merged := make([]*usecases.Node, 0, total)
+	for _, group := range groups {
+		merged = append(merged, group...)
+	}
+
+	sort.SliceStable(merged, func(i, j int) bool {
+		return merged[i].SortOrder < merged[j].SortOrder
+	})
+
+	return merged
 }
 
 func (r *NodeSubscriptionRepository) GetByTokenHash(ctx context.Context, tokenHash string) (usecases.NodeData, error) {
@@ -272,7 +303,8 @@ func (r *NodeSubscriptionRepository) getHybridPlanNodes(ctx context.Context, sub
 		return nil, err
 	}
 
-	var resourceGroupNodes []*usecases.Node
+	var originNodes []*usecases.Node
+	var forwardedNodes []*usecases.Node
 	if len(groupIDs) > 0 {
 		// Get node IDs that belong to these resource groups
 		var nodeIDs []uint
@@ -297,9 +329,9 @@ func (r *NodeSubscriptionRepository) getHybridPlanNodes(ctx context.Context, sub
 			}
 
 			// Load protocol configs for resource group nodes
-			resourceGroupNodes = r.buildNodesWithConfigs(ctx, nodeModels)
+			originNodes = r.buildNodesWithConfigs(ctx, nodeModels)
 
-			for _, node := range resourceGroupNodes {
+			for _, node := range originNodes {
 				nodeMap[node.ID] = node
 			}
 		}
@@ -307,12 +339,7 @@ func (r *NodeSubscriptionRepository) getHybridPlanNodes(ctx context.Context, sub
 		// Generate forwarded nodes for resource group nodes if needed
 		// Rules are selected by group membership, target nodes can be outside the resource groups
 		if mode == usecases.NodeModeForward || mode == usecases.NodeModeAll {
-			forwardedResourceGroupNodes := r.getForwardedNodes(ctx, groupIDs, nodeMap)
-			if mode == usecases.NodeModeForward {
-				resourceGroupNodes = forwardedResourceGroupNodes
-			} else {
-				resourceGroupNodes = append(resourceGroupNodes, forwardedResourceGroupNodes...)
-			}
+			forwardedNodes = r.getForwardedNodes(ctx, groupIDs, nodeMap)
 		}
 	}
 
@@ -327,17 +354,26 @@ func (r *NodeSubscriptionRepository) getHybridPlanNodes(ctx context.Context, sub
 		}
 	}
 
-	// Combine both types of nodes
+	// Combine the groups into one sort_order-ordered list.
 	// External forward rules are already included via:
 	// - getForwardedNodes for resource group nodes (system external rules)
 	// - getUserForwardNodes for user's own external rules
-	allNodes := append(resourceGroupNodes, userForwardNodes...)
+	var allNodes []*usecases.Node
+	switch mode {
+	case usecases.NodeModeOrigin:
+		allNodes = originNodes
+	case usecases.NodeModeForward:
+		allNodes = mergeBySortOrder(forwardedNodes, userForwardNodes)
+	default: // NodeModeAll
+		allNodes = mergeBySortOrder(originNodes, forwardedNodes, userForwardNodes)
+	}
 
 	r.logger.Debugw("retrieved hybrid plan nodes",
 		"user_id", userID,
 		"subscription_id", subscriptionID,
 		"plan_id", planID,
-		"resource_group_node_count", len(resourceGroupNodes),
+		"origin_node_count", len(originNodes),
+		"forwarded_node_count", len(forwardedNodes),
 		"user_forward_node_count", len(userForwardNodes),
 		"total_count", len(allNodes),
 		"mode", mode,

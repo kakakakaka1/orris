@@ -81,6 +81,7 @@ type Router struct {
 	nodeHubHandler                 *nodeHandlers.NodeHubHandler
 	nodeVersionHandler             *nodeHandlers.NodeVersionHandler
 	nodeSSEHandler                 *nodeHandlers.NodeSSEHandler
+	subscriptionOrderHandler       *nodeHandlers.SubscriptionOrderHandler
 	adminHub                       *services.AdminHub
 	configSyncService              *forwardServices.ConfigSyncService
 	trafficLimitEnforcementSvc     *forwardServices.TrafficLimitEnforcementService
@@ -153,6 +154,7 @@ func NewRouter(userService *user.ServiceDDD, db *gorm.DB, redisClient *redis.Cli
 		nodeHubHandler:                 c.hdlrs.nodeHubHandler,
 		nodeVersionHandler:             c.hdlrs.nodeVersionHandler,
 		nodeSSEHandler:                 c.hdlrs.nodeSSEHandler,
+		subscriptionOrderHandler:       c.hdlrs.subscriptionOrderHandler,
 		adminHub:                       c.adminHub,
 		configSyncService:              c.configSyncService,
 		trafficLimitEnforcementSvc:     c.trafficLimitEnforcementSvc,

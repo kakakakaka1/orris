@@ -115,6 +115,11 @@ type RuleQuerier interface {
 	// ListByExternalSource returns all forward rules with the given external source.
 	// Used for querying rules imported from a specific external system.
 	ListByExternalSource(ctx context.Context, source string) ([]*ForwardRule, error)
+
+	// MaxSortOrder returns the highest sort_order across all rules, or 0 when there are none.
+	// sort_order is one sequence shared with nodes.sort_order, so a new rule needs the
+	// current maximum to land at the end of a subscription rather than at its front.
+	MaxSortOrder(ctx context.Context) (int, error)
 }
 
 // RuleWriter defines create, update, and delete operations for forward rules.

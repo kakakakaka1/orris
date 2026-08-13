@@ -94,6 +94,13 @@ type NodeRepository interface {
 	// Returns the number of nodes updated and any error.
 	BatchUpdateGroupIDs(ctx context.Context, nodeGroupIDs map[uint][]uint) (int, error)
 
+	// UpdateSortOrders batch updates sort_order for multiple nodes.
+	// nodeOrders is a map of node ID to new sort order.
+	// sort_order shares one value space with forward_rules.sort_order: both feed the
+	// merged ordering of a subscription, so callers must allocate values across both
+	// tables rather than numbering each table independently.
+	UpdateSortOrders(ctx context.Context, nodeOrders map[uint]int) error
+
 	// CountByLastSeenAfter counts nodes whose last_seen_at is after the given threshold.
 	CountByLastSeenAfter(ctx context.Context, threshold time.Time) (int64, error)
 

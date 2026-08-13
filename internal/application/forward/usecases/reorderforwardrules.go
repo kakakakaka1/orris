@@ -3,6 +3,7 @@ package usecases
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/orris-inc/orris/internal/domain/forward"
 	"github.com/orris-inc/orris/internal/shared/db"
@@ -14,6 +15,56 @@ import (
 type RuleOrder struct {
 	RuleSID   string
 	SortOrder int
+}
+
+// resolvedRuleOrder pairs a rule's existing position with the requested one.
+type resolvedRuleOrder struct {
+	ruleID    uint
+	current   int
+	requested int
+}
+
+// buildRuleSortOrders turns requested positions into sort_order values to persist.
+//
+// forward_rules.sort_order shares one value space with nodes.sort_order — the
+// subscription is rendered by merging both kinds on that single key — so what a caller
+// is allowed to write depends on how much of the sequence it can see.
+//
+// Admin callers order rules against the whole sequence, origin nodes included, so their
+// values are written through unchanged.
+//
+// Scoped callers (a user, or a subscription owner) only ever see their own rules. A
+// drag-and-drop UI therefore sends dense positions like 1..N, and writing those verbatim
+// would drag the entire set ahead of every origin node. Instead the rules keep the exact
+// set of positions they already occupy and merely swap places among themselves; where
+// that block sits relative to origin nodes stays an administrative decision.
+func buildRuleSortOrders(resolved []resolvedRuleOrder, scoped bool) map[uint]int {
+	orders := make(map[uint]int, len(resolved))
+
+	if !scoped {
+		for _, r := range resolved {
+			orders[r.ruleID] = r.requested
+		}
+		return orders
+	}
+
+	slots := make([]int, len(resolved))
+	for i, r := range resolved {
+		slots[i] = r.current
+	}
+	sort.Ints(slots)
+
+	ordered := make([]resolvedRuleOrder, len(resolved))
+	copy(ordered, resolved)
+	sort.SliceStable(ordered, func(i, j int) bool {
+		return ordered[i].requested < ordered[j].requested
+	})
+
+	for i, r := range ordered {
+		orders[r.ruleID] = slots[i]
+	}
+
+	return orders
 }
 
 // ReorderForwardRulesCommand represents the input for reordering forward rules.
@@ -69,8 +120,8 @@ func (uc *ReorderForwardRulesUseCase) Execute(ctx context.Context, cmd ReorderFo
 			return fmt.Errorf("failed to get rules: %w", err)
 		}
 
-		// Build sort order map and validate ownership
-		ruleOrders := make(map[uint]int, len(cmd.RuleOrders))
+		// Resolve rules and validate ownership
+		resolved := make([]resolvedRuleOrder, 0, len(cmd.RuleOrders))
 		for _, order := range cmd.RuleOrders {
 			rule, exists := rulesMap[order.RuleSID]
 			if !exists {
@@ -103,8 +154,17 @@ func (uc *ReorderForwardRulesUseCase) Execute(ctx context.Context, cmd ReorderFo
 				}
 			}
 
-			ruleOrders[rule.ID()] = order.SortOrder
+			resolved = append(resolved, resolvedRuleOrder{
+				ruleID:    rule.ID(),
+				current:   rule.SortOrder(),
+				requested: order.SortOrder,
+			})
 		}
+
+		// Scoped callers only see their own rules, so their requested values are
+		// relative and must be mapped back onto the positions they already hold.
+		scoped := cmd.UserID != nil || cmd.SubscriptionID != nil
+		ruleOrders := buildRuleSortOrders(resolved, scoped)
 
 		// Update sort orders in batch
 		if err := uc.repo.UpdateSortOrders(txCtx, ruleOrders); err != nil {

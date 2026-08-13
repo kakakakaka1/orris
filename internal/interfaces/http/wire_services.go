@@ -340,6 +340,19 @@ func (c *Container) initNode() {
 	ucs.generateNodeInstallScriptUC = nodeUsecases.NewGenerateNodeInstallScriptUseCase(repos.nodeRepoImpl, log)
 	ucs.generateBatchInstallScriptUC = nodeUsecases.NewGenerateBatchInstallScriptUseCase(repos.nodeRepoImpl, log)
 
+	// Merged subscription ordering: origin nodes and system forward rules share one
+	// sort_order sequence, so both repositories are written under a single transaction.
+	subscriptionOrderTxMgr := shareddb.NewTransactionManager(db)
+	ucs.listSubscriptionOrderUC = nodeUsecases.NewListSubscriptionOrderUseCase(
+		repos.nodeRepoImpl, repos.forwardRuleRepo, repos.resourceGroupRepo, log,
+	)
+	ucs.reorderSubscriptionOrderUC = nodeUsecases.NewReorderSubscriptionOrderUseCase(
+		repos.nodeRepoImpl, repos.forwardRuleRepo, subscriptionOrderTxMgr, log,
+	)
+	hdlrs.subscriptionOrderHandler = nodeHandlers.NewSubscriptionOrderHandler(
+		ucs.listSubscriptionOrderUC, ucs.reorderSubscriptionOrderUC, log,
+	)
+
 	// Initialize user node use cases
 	ucs.createUserNodeUC = nodeUsecases.NewCreateUserNodeUseCase(repos.nodeRepoImpl, log)
 	ucs.listUserNodesUC = nodeUsecases.NewListUserNodesUseCase(repos.nodeRepoImpl, log)

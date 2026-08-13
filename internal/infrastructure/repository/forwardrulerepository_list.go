@@ -552,3 +552,21 @@ func (r *ForwardRuleRepositoryImpl) ListByExternalSource(ctx context.Context, so
 
 	return entities, nil
 }
+
+// MaxSortOrder returns the highest sort_order across all rules, or 0 when there are none.
+// Soft-deleted rules are excluded: they never render in a subscription, so they must not
+// push new rules further down the shared sequence.
+func (r *ForwardRuleRepositoryImpl) MaxSortOrder(ctx context.Context) (int, error) {
+	var maxSortOrder int
+
+	tx := db.GetTxFromContext(ctx, r.db)
+	if err := tx.Model(&models.ForwardRuleModel{}).
+		Scopes(db.NotDeleted()).
+		Select("COALESCE(MAX(sort_order), 0)").
+		Scan(&maxSortOrder).Error; err != nil {
+		r.logger.Errorw("failed to get max sort order", "error", err)
+		return 0, fmt.Errorf("failed to get max sort order: %w", err)
+	}
+
+	return maxSortOrder, nil
+}

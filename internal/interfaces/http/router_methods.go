@@ -84,17 +84,18 @@ func (r *Router) SetupRoutes(cfg *config.Config) {
 	})
 
 	routes.SetupNodeRoutes(r.engine, &routes.NodeRouteConfig{
-		NodeHandler:         r.nodeHandler,
-		NodeHubHandler:      r.nodeHubHandler,
-		NodeVersionHandler:  r.nodeVersionHandler,
-		NodeSSEHandler:      r.nodeSSEHandler,
-		UserNodeHandler:     r.userNodeHandler,
-		SubscriptionHandler: r.nodeSubscriptionHandler,
-		AuthMiddleware:      r.authMiddleware,
-		NodeTokenMW:         r.nodeTokenMiddleware,
-		NodeOwnerMW:         r.nodeOwnerMiddleware,
-		NodeQuotaMW:         r.nodeQuotaMiddleware,
-		RateLimiter:         r.rateLimiter,
+		NodeHandler:              r.nodeHandler,
+		NodeHubHandler:           r.nodeHubHandler,
+		NodeVersionHandler:       r.nodeVersionHandler,
+		NodeSSEHandler:           r.nodeSSEHandler,
+		UserNodeHandler:          r.userNodeHandler,
+		SubscriptionHandler:      r.nodeSubscriptionHandler,
+		SubscriptionOrderHandler: r.subscriptionOrderHandler,
+		AuthMiddleware:           r.authMiddleware,
+		NodeTokenMW:              r.nodeTokenMiddleware,
+		NodeOwnerMW:              r.nodeOwnerMiddleware,
+		NodeQuotaMW:              r.nodeQuotaMiddleware,
+		RateLimiter:              r.rateLimiter,
 	})
 
 	routes.SetupAgentAPIRoutes(r.engine, &routes.AgentAPIRouteConfig{

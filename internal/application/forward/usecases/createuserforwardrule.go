@@ -238,6 +238,11 @@ func (uc *CreateUserForwardRuleUseCase) Execute(ctx context.Context, cmd CreateU
 	ipVersion := vo.IPVersion(cmd.IPVersion)
 	tunnelType := vo.TunnelType(cmd.TunnelType)
 	userIDPtr := &cmd.UserID
+	sortOrder, err := resolveNewRuleSortOrder(ctx, uc.repo, cmd.SortOrder)
+	if err != nil {
+		uc.logger.Errorw("failed to resolve sort order for new rule", "user_id", cmd.UserID, "error", err)
+		return nil, err
+	}
 	rule, err := forward.NewForwardRule(
 		agentID,
 		userIDPtr,
@@ -260,7 +265,7 @@ func (uc *CreateUserForwardRuleUseCase) Execute(ctx context.Context, cmd CreateU
 		protocol,
 		cmd.Remark,
 		cmd.TrafficMultiplier,
-		derefIntOrDefault(cmd.SortOrder, 0),
+		sortOrder,
 		vo.AddressPreference(cmd.AddressPreference),
 		id.NewForwardRuleID,
 	)

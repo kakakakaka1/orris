@@ -389,6 +389,11 @@ func (uc *CreateForwardRuleUseCase) Execute(ctx context.Context, cmd CreateForwa
 	ipVersion := vo.IPVersion(cmd.IPVersion)
 	tunnelType := vo.TunnelType(cmd.TunnelType)
 	loadBalanceStrategy := vo.ParseLoadBalanceStrategy(cmd.LoadBalanceStrategy)
+	sortOrder, err := resolveNewRuleSortOrder(ctx, uc.repo, cmd.SortOrder)
+	if err != nil {
+		uc.logger.Errorw("failed to resolve sort order for new rule", "error", err)
+		return nil, err
+	}
 	rule, err := forward.NewForwardRule(
 		agentID,
 		cmd.UserID,
@@ -411,7 +416,7 @@ func (uc *CreateForwardRuleUseCase) Execute(ctx context.Context, cmd CreateForwa
 		protocol,
 		cmd.Remark,
 		cmd.TrafficMultiplier,
-		derefIntOrDefault(cmd.SortOrder, 0),
+		sortOrder,
 		vo.AddressPreference(cmd.AddressPreference),
 		id.NewForwardRuleID,
 	)
@@ -668,6 +673,29 @@ func derefIntOrDefault(ptr *int, defaultVal int) int {
 	return *ptr
 }
 
+// sortOrderStep is the gap left between adjacent subscription entries, matching the step
+// used when the shared node/rule sequence was established.
+const sortOrderStep = 100
+
+// resolveNewRuleSortOrder decides where a newly created rule lands in the subscription.
+//
+// forward_rules.sort_order shares one sequence with nodes.sort_order — the subscription
+// is rendered by merging both kinds on that single key — so the historical default of 0
+// would now place a new rule ahead of every origin node rather than at the end of the
+// list. Unless the caller positions the rule explicitly, it goes to the back.
+func resolveNewRuleSortOrder(ctx context.Context, repo forward.Repository, requested *int) (int, error) {
+	if requested != nil {
+		return *requested, nil
+	}
+
+	maxSortOrder, err := repo.MaxSortOrder(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("failed to resolve sort order: %w", err)
+	}
+
+	return maxSortOrder + sortOrderStep, nil
+}
+
 // Default port range for auto-assignment when agent has no port restrictions.
 const (
 	defaultPortRangeStart = 10000
@@ -827,6 +855,11 @@ func (uc *CreateForwardRuleUseCase) executeExternalRule(ctx context.Context, cmd
 	}
 
 	// Create external forward rule domain entity
+	sortOrder, err := resolveNewRuleSortOrder(ctx, uc.repo, cmd.SortOrder)
+	if err != nil {
+		uc.logger.Errorw("failed to resolve sort order for new external rule", "error", err)
+		return nil, err
+	}
 	rule, err := forward.NewExternalForwardRule(
 		cmd.UserID,
 		nil, // subscriptionID is nil for admin-created rules
@@ -837,7 +870,7 @@ func (uc *CreateForwardRuleUseCase) executeExternalRule(ctx context.Context, cmd
 		cmd.ExternalSource,
 		cmd.ExternalRuleID,
 		cmd.Remark,
-		derefIntOrDefault(cmd.SortOrder, 0),
+		sortOrder,
 		groupIDs,
 		id.NewForwardRuleID,
 	)

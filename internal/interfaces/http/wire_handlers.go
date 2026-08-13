@@ -47,6 +47,8 @@ type allHandlers struct {
 	nodeVersionHandler      *nodeHandlers.NodeVersionHandler
 	nodeSSEHandler          *nodeHandlers.NodeSSEHandler
 
+	subscriptionOrderHandler *nodeHandlers.SubscriptionOrderHandler
+
 	// Forward
 	forwardRuleHandler             *forwardRuleHandlers.Handler
 	forwardAgentHandler            *forwardAgentCrudHandlers.Handler
